@@ -19,15 +19,14 @@ class ChangesetDownload(object):
             'time=%s,%s&closed=true' % (start, end)
         self.download = requests.get(self.url)
         self.xml = ET.fromstring(self.download.content)
-        self.changesets = [self.get_id_editor(changeset) for changeset in self.xml.getchildren()]
+        self.changesets = [self.changeset_info(changeset) for changeset in self.xml.getchildren()]
 
-    def get_id_editor(self, changeset):
-        editor = ''
-        for tag in changeset.getchildren():
-            if tag.attrib.get('k') == 'created_by':
-                editor = tag.attrib.get('v')
+    def changeset_info(self, changeset):
+        """Return a dictionary with the id and all the tags of the changeset."""
+        keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
+        values = [tag.attrib.get('v') for tag in changeset.getchildren()]
 
-        return [changeset.get('id'), editor]
+        return dict(zip(keys + ['id'], values + [changeset.get('id')]))
 
     def get_changeset(self, changeset):
         url = 'http://www.openstreetmap.org/api/0.6/changeset/%s/download' % changeset

@@ -9,6 +9,6 @@ def test_download():
         'time=20150427T000000,20150427T000400&closed=true'
     assert d.download.status_code == 200
     assert len(d.changesets) == 26
-    assert d.changesets[0][0] == '30521534'
-    assert d.changesets[0][1] == 'Potlatch 2'
-
+    assert d.changesets[0]['id'] == '30521534'
+    assert d.changesets[0]['created_by'] == 'Potlatch 2'
+    assert d.changesets[0]['comment'] == 'ajustando'
