@@ -3,7 +3,22 @@ import requests
 import xml.etree.ElementTree as ET
 
 
-class ChangesetDownload(object):
+def changeset_info(changeset):
+    """Return a dictionary with the id and all the tags of the changeset."""
+    keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
+    keys += ['id', 'user']
+    values = [tag.attrib.get('v') for tag in changeset.getchildren()]
+    values += [changeset.get('id'), changeset.get('user')]
+
+    return dict(zip(keys, values))
+
+
+def get_changeset(changeset):
+    url = 'http://www.openstreetmap.org/api/0.6/changeset/%s/download' % changeset
+    return ET.fromstring(requests.get(url).content)
+
+
+class ChangesetQuery(object):
     """Class to Download OSM Changesets"""
 
     def __init__(self, bbox, start, end):
@@ -19,17 +34,8 @@ class ChangesetDownload(object):
             'time=%s,%s&closed=true' % (start, end)
         self.download = requests.get(self.url)
         self.xml = ET.fromstring(self.download.content)
-        self.changesets = [self.changeset_info(changeset) for changeset in self.xml.getchildren()]
+        self.changesets = [changeset_info(changeset) for changeset in self.xml.getchildren()]
 
-    def changeset_info(self, changeset):
-        """Return a dictionary with the id and all the tags of the changeset."""
-        keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
-        values = [tag.attrib.get('v') for tag in changeset.getchildren()]
 
-        return dict(zip(keys + ['id'], values + [changeset.get('id')]))
-
-    def get_changeset(self, changeset):
-        url = 'http://www.openstreetmap.org/api/0.6/changeset/%s/download' % changeset
-        return ET.fromstring(requests.get(url).content)
 
 
