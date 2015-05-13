@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+install:
+  - "pip install coveralls"
+  - "pip install -e .[test]"
+script: 
+  - py.test
+  - coverage run --source=osmdetective -m osmdetective
+after_success:
+  - coveralls
+sudo: false
+notifications:
+  email: false
