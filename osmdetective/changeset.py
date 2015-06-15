@@ -1,5 +1,9 @@
 import requests
+from homura import download
 
+from os.path import basename, join
+from tempfile import mkdtemp
+import gzip
 import xml.etree.ElementTree as ET
 
 
@@ -34,6 +38,17 @@ class ChangesetQuery(object):
             'time=%s,%s&closed=true' % (start, end)
         self.download = requests.get(self.url)
         self.xml = ET.fromstring(self.download.content)
+        self.changesets = [changeset_info(changeset) for changeset in self.xml.getchildren()]
+
+
+
+class ChangesetList(object):
+
+    def __init__(self, url):
+        self.path = mkdtemp()
+        self.filename = join(self.path, basename(url))
+        download(url, self.path)
+        self.xml = ET.fromstring(gzip.open(self.filename).read())
         self.changesets = [changeset_info(changeset) for changeset in self.xml.getchildren()]
 
 
