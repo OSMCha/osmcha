@@ -1,7 +1,7 @@
 import requests
 from homura import download
 
-from os.path import basename, join
+from os.path import basename, join, isfile
 from tempfile import mkdtemp
 import gzip
 import xml.etree.ElementTree as ET
@@ -22,35 +22,23 @@ def get_changeset(changeset):
     return ET.fromstring(requests.get(url).content)
 
 
-class ChangesetQuery(object):
-    """Class to Download OSM Changesets"""
-
-    def __init__(self, bbox, start, end):
-        """
-        @params
-        bbox - tuple containing the coordinates in the following order: left,bottom,right,top
-        start - start date of the query in the format 20150427T000000
-        end - end date of the query in the same format of start
-        """
-
-        self.url = 'https://api.openstreetmap.org/api/0.6/changesets/?' + \
-            'bbox=%s,%s,%s,%s&' % bbox + \
-            'time=%s,%s&closed=true' % (start, end)
-        self.download = requests.get(self.url)
-        self.xml = ET.fromstring(self.download.content)
-        self.changesets = [changeset_info(changeset) for changeset in self.xml.getchildren()]
-
-
-
 class ChangesetList(object):
+    """Read replication changeset and return a list with information of all
+    changesets.
+    """
 
     def __init__(self, url):
-        self.path = mkdtemp()
-        self.filename = join(self.path, basename(url))
-        download(url, self.path)
+        self.read_file(url)
+        self.changesets = [changeset_info(ch) for ch in self.xml.getchildren()]
+
+    def read_file(self, url):
+        """Download the replicate_changeset file or read it directly from the
+        filesystem (to test purposes)."""
+        if isfile(url):
+            self.filename = url
+        else:
+            self.path = mkdtemp()
+            self.filename = join(self.path, basename(url))
+            download(url, self.path)
+
         self.xml = ET.fromstring(gzip.open(self.filename).read())
-        self.changesets = [changeset_info(changeset) for changeset in self.xml.getchildren()]
-
-
-
-
