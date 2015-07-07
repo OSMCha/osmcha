@@ -24,6 +24,7 @@ setup(name='osmcha',
           'click',
           'requests',
           'homura',
+          'shapely',
       ],
       extras_require={
           'test': ['pytest'],
