@@ -1,14 +1,14 @@
-osmdetective
+osmcha
 ============
 
-Python package to investigate suspicious OSM changesets
+OSM Changeset Analyser, a Python package to detect suspicious OSM changesets
 
 
-.. image:: https://travis-ci.org/willemarcel/osmdetective.svg
-    :target: https://travis-ci.org/willemarcel/osmdetective
+.. image:: https://travis-ci.org/willemarcel/osmcha.svg
+    :target: https://travis-ci.org/willemarcel/osmcha
 
-.. image:: https://coveralls.io/repos/willemarcel/osmdetective/badge.svg
-    :target: https://coveralls.io/r/willemarcel/osmdetective
+.. image:: https://coveralls.io/repos/willemarcel/osmcha/badge.svg
+    :target: https://coveralls.io/r/willemarcel/osmcha
 
 License
 =======

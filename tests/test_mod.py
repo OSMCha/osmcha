@@ -1,4 +1,4 @@
-from osmdetective.changeset import ChangesetList
+from osmcha.changeset import ChangesetList
 
 
 #def test_query():

@@ -1,3 +1,3 @@
-# osmdetective
+# osmcha
 
 has_legs = False

@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 
-from osmdetective.scripts.cli import cli
+from osmcha.scripts.cli import cli
 
 
 def test_cli_count():

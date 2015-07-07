@@ -7,28 +7,29 @@ with codecs_open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
 
 
-setup(name='osmdetective',
+setup(name='osmcha',
       version='0.0.1',
-      description="Python package to investigate suspicious OSM changesets",
+      description="Python package to detect suspicious OSM changesets",
       long_description=long_description,
       classifiers=[],
       keywords=['openstreetmap', 'osm', 'QA'],
       author="Wille Marcel",
       author_email='wille@wille.blog.br',
-      url='https://github.com/willemarcel/osmdetective',
+      url='https://github.com/willemarcel/osmcha',
       license='GPLv3+',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
       install_requires=[
           'click',
-          'requests'
+          'requests',
+          'homura',
       ],
       extras_require={
           'test': ['pytest'],
       },
       entry_points="""
       [console_scripts]
-      osmdetective=osmdetective.scripts.cli:cli
+      osmcha=osmcha.scripts.cli:cli
       """
       )

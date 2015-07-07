@@ -2,12 +2,12 @@
 
 import click
 
-import osmdetective
+import osmcha
 
 
-@click.command('osmdetective')
+@click.command('osmcha')
 @click.argument('count', type=int, metavar='N')
 def cli(count):
     """Echo a value `N` number of times"""
     for i in range(count):
-        click.echo(osmdetective.has_legs)
+        click.echo(osmcha.has_legs)
