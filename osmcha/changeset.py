@@ -63,3 +63,35 @@ class ChangesetList(object):
 
     def filter(self):
         self.content = [ch for ch in self.xml.getchildren() if get_bounds(ch).intersects(self.area)]
+
+
+class Analyse(object):
+
+    def __init__(self, changeset):
+        self.changeset = changeset
+        self.reasons = []
+        self.verify_words()
+
+    def verify_words(self):
+        suspect_words = [
+            'google',
+            'nokia',
+            'here',
+            'waze',
+            'apple',
+            'tomtom'
+        ]
+
+        if 'source' in self.changeset.keys():
+            for word in suspect_words:
+                if word in self.changeset.get('source').lower():
+                    self.is_suspect = True
+                    self.reasons.append('suspect_words')
+                    break
+
+        if 'comment' in self.changeset.keys():
+            for word in suspect_words:
+                if word in self.changeset.get('comment').lower():
+                    self.is_suspect = True
+                    self.reasons.append('suspect_words')
+                    break
