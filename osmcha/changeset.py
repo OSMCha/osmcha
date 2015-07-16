@@ -31,6 +31,11 @@ def get_changeset(changeset):
     return ET.fromstring(requests.get(url).content)
 
 
+def get_metadata(changeset):
+    url = 'http://www.openstreetmap.org/api/0.6/changeset/%s' % changeset
+    return ET.fromstring(requests.get(url).content).getchildren()[0]
+
+
 class ChangesetList(object):
     """Read replication changeset and return a list with information of all
     changesets.
@@ -79,19 +84,30 @@ class Analyse(object):
             'here',
             'waze',
             'apple',
-            'tomtom'
+            'tomtom',
+            'import'
         ]
 
         if 'source' in self.changeset.keys():
             for word in suspect_words:
                 if word in self.changeset.get('source').lower():
                     self.is_suspect = True
-                    self.reasons.append('suspect_words')
+                    self.reasons.append('suspect_word')
                     break
 
         if 'comment' in self.changeset.keys():
             for word in suspect_words:
                 if word in self.changeset.get('comment').lower():
                     self.is_suspect = True
-                    self.reasons.append('suspect_words')
+                    self.reasons.append('suspect_word')
                     break
+
+    def count(self):
+        xml = get_changeset(self.changeset.get('id'))
+        actions = [action.tag for action in xml.getchildren()]
+        return {
+            'create': actions.count('create'),
+            'modify': actions.count('modify'),
+            'delete': actions.count('delete')
+        }
+

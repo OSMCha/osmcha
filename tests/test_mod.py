@@ -1,5 +1,6 @@
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
+from osmcha.changeset import get_metadata, changeset_info
 
 
 def test_changeset_list():
@@ -29,6 +30,7 @@ def test_analyse_verify_words():
 
     ch = Analyse(ch_dict)
     assert ch.is_suspect
+    assert 'suspect_word' in ch.reasons
 
     ch_dict = {
         'created_by': 'Potlatch 2',
@@ -41,3 +43,10 @@ def test_analyse_verify_words():
 
     ch = Analyse(ch_dict)
     assert ch.is_suspect
+    assert 'suspect_word' in ch.reasons
+
+
+def test_changeset_count():
+    changeset = changeset_info(get_metadata(32663070))
+    ch = Analyse(changeset)
+    assert ch.count() == {'create': 8, 'modify': 3, 'delete': 2}
