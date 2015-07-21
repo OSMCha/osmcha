@@ -14,21 +14,15 @@ class InvalidChangesetError(Exception):
 
 
 def changeset_info(changeset):
-    """Return a dictionary with the id and all the tags of the changeset."""
+    """Return a dictionary with id, user, bounds and all the tags of the
+    changeset.
+    """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
     keys += ['id', 'user', 'bounds']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
     values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset)]
 
     return dict(zip(keys, values))
-
-
-def get_bounds(changeset):
-    """Get the bounds of the changeset and return it as a MultiPoint object."""
-    return MultiPoint([
-        (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
-        (float(changeset.get('max_lon')), float(changeset.get('max_lat')))
-    ])
 
 
 def get_changeset(changeset):
@@ -45,6 +39,14 @@ def get_metadata(changeset):
     """
     url = 'http://www.openstreetmap.org/api/0.6/changeset/%s' % changeset
     return ET.fromstring(requests.get(url).content).getchildren()[0]
+
+
+def get_bounds(changeset):
+    """Get the bounds of the changeset and return it as a MultiPoint object."""
+    return MultiPoint([
+        (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
+        (float(changeset.get('max_lon')), float(changeset.get('max_lat')))
+    ])
 
 
 class ChangesetList(object):
@@ -101,8 +103,12 @@ class Analyse(object):
                 returned by the changeset_info function
                 """
             )
-        self.reasons = []
+        self.suspicion_reasons = []
         self.is_suspect = False
+        self.verify_words()
+
+    def full_analysis(self):
+        self.count()
         self.verify_words()
 
     def verify_words(self):
@@ -123,25 +129,38 @@ class Analyse(object):
             for word in suspect_words:
                 if word in self.changeset.get('source').lower():
                     self.is_suspect = True
-                    self.reasons.append('suspect_word')
+                    self.suspicion_reasons.append('suspect_word')
                     break
 
         if 'comment' in self.changeset.keys():
             for word in suspect_words:
                 if word in self.changeset.get('comment').lower():
                     self.is_suspect = True
-                    self.reasons.append('suspect_word')
+                    self.suspicion_reasons.append('suspect_word')
                     break
 
     def count(self):
         """Count the number of elements created, modified and deleted by the
-        changeset.
+        changeset and analyses if it is a possible import, mass modification or
+        a mass deletion.
         """
         xml = get_changeset(self.changeset.get('id'))
         actions = [action.tag for action in xml.getchildren()]
-        return {
+        self.count = {
             'create': actions.count('create'),
             'modify': actions.count('modify'),
             'delete': actions.count('delete')
         }
 
+        if self.count['create'] / len(actions) > 0.7 and \
+            self.count['create'] > 200:
+            self.is_suspect = True
+            self.suspicion_reasons.append('possible import')
+        elif self.count['modify'] / len(actions) > 0.7 and \
+            self.count['modify'] > 200:
+            self.is_suspect = True
+            self.suspicion_reasons.append('mass modification')
+        elif self.count['delete'] / len(actions) > 0.7 and \
+            self.count['delete'] > 50:
+            self.is_suspect = True
+            self.suspicion_reasons.append('mass deletion')

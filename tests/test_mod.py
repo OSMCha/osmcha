@@ -40,7 +40,7 @@ def test_analyse_verify_words():
 
     ch = Analyse(ch_dict)
     assert ch.is_suspect
-    assert 'suspect_word' in ch.reasons
+    assert 'suspect_word' in ch.suspicion_reasons
 
     ch_dict = {
         'created_by': 'Potlatch 2',
@@ -53,9 +53,33 @@ def test_analyse_verify_words():
 
     ch = Analyse(ch_dict)
     assert ch.is_suspect
-    assert 'suspect_word' in ch.reasons
+    assert 'suspect_word' in ch.suspicion_reasons
 
 
-def test_changeset_count():
+def test_analyse_count():
     ch = Analyse(32663070)
-    assert ch.count() == {'create': 8, 'modify': 3, 'delete': 2}
+    ch.full_analysis()
+    assert ch.count == {'create': 8, 'modify': 3, 'delete': 2}
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
+
+
+def test_analyse_import():
+    ch = Analyse(22914738)
+    ch.full_analysis()
+    assert ch.is_suspect is True
+    assert 'possible import' in ch.suspicion_reasons
+
+
+def test_analyse_mass_modification():
+    ch = Analyse(19863853)
+    ch.full_analysis()
+    assert ch.is_suspect is True
+    assert 'mass modification' in ch.suspicion_reasons
+
+
+def test_analyse_mass_deletion():
+    ch = Analyse(31450443)
+    ch.full_analysis()
+    assert ch.is_suspect is True
+    assert 'mass deletion' in ch.suspicion_reasons
