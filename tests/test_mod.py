@@ -1,8 +1,9 @@
+from pytest import raises
 from shapely.geometry import MultiPoint
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
-from osmcha.changeset import get_metadata, changeset_info
+from osmcha.changeset import get_metadata, changeset_info, InvalidChangesetError
 
 
 def test_changeset_list():
@@ -20,6 +21,11 @@ def test_changeset_list_with_filters():
     c = ChangesetList('tests/245.osm.gz', 'tests/map.geojson')
     assert len(c.changesets) == 1
     assert c.changesets[0]['id'] == '31982803'
+
+
+def test_invalid_changeset_error():
+    with raises(InvalidChangesetError):
+        Analyse([999])
 
 
 def test_analyse_verify_words():
@@ -51,6 +57,5 @@ def test_analyse_verify_words():
 
 
 def test_changeset_count():
-    changeset = changeset_info(get_metadata(32663070))
-    ch = Analyse(changeset)
+    ch = Analyse(32663070)
     assert ch.count() == {'create': 8, 'modify': 3, 'delete': 2}

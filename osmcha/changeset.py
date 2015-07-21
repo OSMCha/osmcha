@@ -9,6 +9,10 @@ import xml.etree.ElementTree as ET
 import json
 
 
+class InvalidChangesetError(Exception):
+    pass
+
+
 def changeset_info(changeset):
     """Return a dictionary with the id and all the tags of the changeset."""
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
@@ -87,7 +91,16 @@ class ChangesetList(object):
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
     def __init__(self, changeset):
-        self.changeset = changeset
+        if type(changeset) in [int, str]:
+            self.changeset = changeset_info(get_metadata(changeset))
+        elif type(changeset) == dict:
+            self.changeset = changeset
+        else:
+            raise InvalidChangesetError(
+                """The changeset param needs to be a changeset id or a dict
+                returned by the changeset_info function
+                """
+            )
         self.reasons = []
         self.is_suspect = False
         self.verify_words()
