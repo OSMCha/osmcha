@@ -1,3 +1,5 @@
+from shapely.geometry import MultiPoint
+
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
 from osmcha.changeset import get_metadata, changeset_info
@@ -10,6 +12,8 @@ def test_changeset_list():
     assert c.changesets[0]['created_by'] == 'Potlatch 2'
     assert c.changesets[0]['user'] == 'GarrettB'
     assert c.changesets[0]['comment'] == 'Added Emerald Pool Waterfall'
+    assert c.changesets[0]['bounds'] == MultiPoint([
+        (-71.0646843, 44.2371354), (-71.0048652, 44.2430624)])
 
 
 def test_changeset_list_with_filters():

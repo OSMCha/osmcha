@@ -12,9 +12,9 @@ import json
 def changeset_info(changeset):
     """Return a dictionary with the id and all the tags of the changeset."""
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
-    keys += ['id', 'user']
+    keys += ['id', 'user', 'bounds']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
-    values += [changeset.get('id'), changeset.get('user')]
+    values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset)]
 
     return dict(zip(keys, values))
 
@@ -89,6 +89,7 @@ class Analyse(object):
     def __init__(self, changeset):
         self.changeset = changeset
         self.reasons = []
+        self.is_suspect = False
         self.verify_words()
 
     def verify_words(self):
