@@ -55,6 +55,20 @@ def test_analyse_verify_words():
     assert ch.is_suspect
     assert 'suspect_word' in ch.suspicion_reasons
 
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'build': '2.3-650-gad99430',
+        'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
+        'version': '2.3',
+        'source': 'Waze',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_words()
+    assert ch.is_suspect
+    assert 'suspect_word' in ch.suspicion_reasons
+
 
 def test_analyse_verify_editor():
     ch_dict = {

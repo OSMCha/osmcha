@@ -139,6 +139,13 @@ class Analyse(object):
                     self.suspicion_reasons.append('suspect_word')
                     break
 
+        if 'imagery_used' in self.changeset.keys():
+            for word in suspect_words:
+                if word in self.changeset.get('imagery_used').lower():
+                    self.is_suspect = True
+                    self.suspicion_reasons.append('suspect_word')
+                    break
+
     def verify_editor(self):
         for editor in ['josm', 'level0', 'merkaartor', 'qgis']:
             if editor in self.changeset['created_by'].lower():
@@ -168,7 +175,7 @@ class Analyse(object):
             self.count['modify'] > 200:
             self.is_suspect = True
             self.suspicion_reasons.append('mass modification')
-        elif self.count['delete'] / len(actions) > 0.7 and \
-            self.count['delete'] > 50:
+        elif (self.count['delete'] / len(actions) > 0.7 and
+            self.count['delete'] > 30) or self.count['delete'] > 1000:
             self.is_suspect = True
             self.suspicion_reasons.append('mass deletion')
