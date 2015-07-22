@@ -157,9 +157,11 @@ class Analyse(object):
             'modify': actions.count('modify'),
             'delete': actions.count('delete')
         }
+        self.verify_editor()
 
         if self.count['create'] / len(actions) > 0.7 and \
-            self.count['create'] > 200:
+            self.count['create'] > 200 and \
+            (self.powerfull_editor or self.count['create'] > 1000):
             self.is_suspect = True
             self.suspicion_reasons.append('possible import')
         elif self.count['modify'] / len(actions) > 0.7 and \
