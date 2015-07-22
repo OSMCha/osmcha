@@ -58,9 +58,9 @@ def test_analyse_verify_words():
     ch_dict = {
         'created_by': 'Potlatch 2',
         'build': '2.3-650-gad99430',
-        'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
         'version': '2.3',
-        'source': 'Waze',
+        'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
+        'source': 'Bing',
         'id': '1',
         'user': 'JustTest'
     }
@@ -143,19 +143,19 @@ def test_analyse_count():
 def test_analyse_import():
     ch = Analyse(22914738)
     ch.full_analysis()
-    assert ch.is_suspect is True
+    assert ch.is_suspect
     assert 'possible import' in ch.suspicion_reasons
 
 
 def test_analyse_mass_modification():
     ch = Analyse(19863853)
     ch.full_analysis()
-    assert ch.is_suspect is True
+    assert ch.is_suspect
     assert 'mass modification' in ch.suspicion_reasons
 
 
 def test_analyse_mass_deletion():
     ch = Analyse(31450443)
     ch.full_analysis()
-    assert ch.is_suspect is True
+    assert ch.is_suspect
     assert 'mass deletion' in ch.suspicion_reasons
