@@ -37,8 +37,8 @@ def test_analyse_verify_words():
         'id': '1',
         'user': 'JustTest'
     }
-
     ch = Analyse(ch_dict)
+    ch.verify_words()
     assert ch.is_suspect
     assert 'suspect_word' in ch.suspicion_reasons
 
@@ -50,10 +50,72 @@ def test_analyse_verify_words():
         'id': '1',
         'user': 'JustTest'
     }
-
     ch = Analyse(ch_dict)
+    ch.verify_words()
     assert ch.is_suspect
     assert 'suspect_word' in ch.suspicion_reasons
+
+
+def test_analyse_verify_editor():
+    ch_dict = {
+        'created_by': 'JOSM/1.5 (8339 en)',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor
+
+    ch_dict = {
+        'created_by': 'Merkaartor 0.18 (de)',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor
+
+    ch_dict = {
+        'created_by': 'Level0 v1.1',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor
+
+    ch_dict = {
+        'created_by': 'QGIS plugin',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor
+
+    ch_dict = {
+        'created_by': 'iD 1.7.3',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
 
 
 def test_analyse_count():

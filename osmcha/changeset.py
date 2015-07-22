@@ -105,7 +105,7 @@ class Analyse(object):
             )
         self.suspicion_reasons = []
         self.is_suspect = False
-        self.verify_words()
+        self.powerfull_editor = False
 
     def full_analysis(self):
         self.count()
@@ -138,6 +138,12 @@ class Analyse(object):
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
+
+    def verify_editor(self):
+        for editor in ['josm', 'level0', 'merkaartor', 'qgis']:
+            if editor in self.changeset['created_by'].lower():
+                self.powerfull_editor = True
+                break
 
     def count(self):
         """Count the number of elements created, modified and deleted by the
