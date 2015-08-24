@@ -94,15 +94,23 @@ class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
     def __init__(self, changeset):
         if type(changeset) in [int, str]:
-            self.changeset = changeset_info(get_metadata(changeset))
+            self.set_fields(changeset_info(get_metadata(changeset)))
         elif type(changeset) == dict:
-            self.changeset = changeset
+            self.set_fields(changeset)
         else:
             raise InvalidChangesetError(
                 """The changeset param needs to be a changeset id or a dict
                 returned by the changeset_info function
                 """
             )
+
+    def set_fields(self, changeset):
+        self.id = int(changeset.get('id'))
+        self.user = changeset.get('user')
+        self.editor = changeset.get('created_by')
+        self.comment = changeset.get('comment', None)
+        self.source = changeset.get('source', None)
+        self.imagery_used = changeset.get('imagery_used', None)
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
@@ -125,30 +133,30 @@ class Analyse(object):
             'import'
         ]
 
-        if 'source' in self.changeset.keys():
+        if self.source:
             for word in suspect_words:
-                if word in self.changeset.get('source').lower():
+                if word in self.source.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
 
-        if 'comment' in self.changeset.keys():
+        if self.comment:
             for word in suspect_words:
-                if word in self.changeset.get('comment').lower():
+                if word in self.comment.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
 
-        if 'imagery_used' in self.changeset.keys():
+        if self.imagery_used:
             for word in suspect_words:
-                if word in self.changeset.get('imagery_used').lower():
+                if word in self.imagery_used.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
 
     def verify_editor(self):
         for editor in ['josm', 'level0', 'merkaartor', 'qgis']:
-            if editor in self.changeset['created_by'].lower():
+            if editor in self.editor.lower():
                 self.powerfull_editor = True
                 break
 
@@ -157,25 +165,22 @@ class Analyse(object):
         changeset and analyses if it is a possible import, mass modification or
         a mass deletion.
         """
-        xml = get_changeset(self.changeset.get('id'))
+        xml = get_changeset(self.id)
         actions = [action.tag for action in xml.getchildren()]
-        self.count = {
-            'create': actions.count('create'),
-            'modify': actions.count('modify'),
-            'delete': actions.count('delete')
-        }
+        self.create = actions.count('create')
+        self.modify = actions.count('modify')
+        self.delete = actions.count('delete')
         self.verify_editor()
 
-        if self.count['create'] / len(actions) > 0.7 and \
-            self.count['create'] > 200 and \
-            (self.powerfull_editor or self.count['create'] > 1000):
+        if self.create / len(actions) > 0.7 and \
+            self.create > 200 and \
+            (self.powerfull_editor or self.create > 1000):
             self.is_suspect = True
             self.suspicion_reasons.append('possible import')
-        elif self.count['modify'] / len(actions) > 0.7 and \
-            self.count['modify'] > 200:
+        elif self.modify / len(actions) > 0.7 and self.modify > 200:
             self.is_suspect = True
             self.suspicion_reasons.append('mass modification')
-        elif (self.count['delete'] / len(actions) > 0.7 and
-            self.count['delete'] > 30) or self.count['delete'] > 1000:
+        elif (self.delete / len(actions) > 0.7 and self.delete > 30) or \
+            self.delete > 1000:
             self.is_suspect = True
             self.suspicion_reasons.append('mass deletion')

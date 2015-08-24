@@ -28,6 +28,22 @@ def test_invalid_changeset_error():
         Analyse([999])
 
 
+def test_analyse_init():
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'build': '2.3-650-gad99430',
+        'version': '2.3',
+        'comment': 'Put data from Google',
+        'id': '1',
+        'user': 'JustTest'
+    }
+    ch = Analyse(ch_dict)
+    assert ch.id == 1
+    assert ch.editor == 'Potlatch 2'
+    assert ch.comment == 'Put data from Google'
+    assert ch.user == 'JustTest'
+
+
 def test_analyse_verify_words():
     ch_dict = {
         'created_by': 'Potlatch 2',
@@ -135,13 +151,15 @@ def test_analyse_verify_editor():
 def test_analyse_count():
     ch = Analyse(32663070)
     ch.full_analysis()
-    assert ch.count == {'create': 8, 'modify': 3, 'delete': 2}
+    assert ch.create == 8
+    assert ch.modify == 3
+    assert ch.delete == 2
     assert ch.is_suspect is False
     assert len(ch.suspicion_reasons) == 0
 
 
 def test_analyse_import():
-    ch = Analyse(22914738)
+    ch = Analyse(10013029)
     ch.full_analysis()
     assert ch.is_suspect
     assert 'possible import' in ch.suspicion_reasons
