@@ -1,5 +1,5 @@
 from pytest import raises
-from shapely.geometry import MultiPoint
+from shapely.geometry import Polygon
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
@@ -13,8 +13,11 @@ def test_changeset_list():
     assert c.changesets[0]['created_by'] == 'Potlatch 2'
     assert c.changesets[0]['user'] == 'GarrettB'
     assert c.changesets[0]['comment'] == 'Added Emerald Pool Waterfall'
-    assert c.changesets[0]['bounds'] == MultiPoint([
-        (-71.0646843, 44.2371354), (-71.0048652, 44.2430624)])
+    assert c.changesets[0]['bounds'] == Polygon([
+        (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+        (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+        (-71.0646843, 44.2371354)
+    ])
 
 
 def test_changeset_list_with_filters():

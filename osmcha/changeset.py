@@ -1,6 +1,6 @@
 import requests
 from homura import download
-from shapely.geometry import Polygon, MultiPoint
+from shapely.geometry import Polygon
 
 from os.path import basename, join, isfile
 from tempfile import mkdtemp
@@ -43,9 +43,12 @@ def get_metadata(changeset):
 
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a MultiPoint object."""
-    return MultiPoint([
+    return Polygon([
         (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
-        (float(changeset.get('max_lon')), float(changeset.get('max_lat')))
+        (float(changeset.get('max_lon')), float(changeset.get('min_lat'))),
+        (float(changeset.get('max_lon')), float(changeset.get('max_lat'))),
+        (float(changeset.get('min_lon')), float(changeset.get('max_lat'))),
+        (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
     ])
 
 
