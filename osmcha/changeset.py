@@ -111,7 +111,7 @@ class Analyse(object):
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
         self.editor = changeset.get('created_by')
-        self.bbox = changeset.get('bbox')
+        self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', None)
         self.source = changeset.get('source', None)
         self.imagery_used = changeset.get('imagery_used', None)
