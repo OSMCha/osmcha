@@ -18,7 +18,7 @@ def changeset_info(changeset):
     changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
-    keys += ['id', 'user', 'bounds']
+    keys += ['id', 'user', 'bbox']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
     values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset)]
 
@@ -42,7 +42,7 @@ def get_metadata(changeset):
 
 
 def get_bounds(changeset):
-    """Get the bounds of the changeset and return it as a MultiPoint object."""
+    """Get the bounds of the changeset and return it as a Polygon object."""
     return Polygon([
         (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
         (float(changeset.get('max_lon')), float(changeset.get('min_lat'))),
@@ -111,6 +111,7 @@ class Analyse(object):
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
         self.editor = changeset.get('created_by')
+        self.bbox = changeset.get('bbox')
         self.comment = changeset.get('comment', None)
         self.source = changeset.get('source', None)
         self.imagery_used = changeset.get('imagery_used', None)
