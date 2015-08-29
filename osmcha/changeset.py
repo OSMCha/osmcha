@@ -3,6 +3,7 @@ from homura import download
 from shapely.geometry import Polygon
 
 from os.path import basename, join, isfile
+from datetime import datetime
 from tempfile import mkdtemp
 import gzip
 import xml.etree.ElementTree as ET
@@ -18,9 +19,10 @@ def changeset_info(changeset):
     changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
-    keys += ['id', 'user', 'bbox']
+    keys += ['id', 'user', 'bbox', 'created_at']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
-    values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset)]
+    values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset),
+        changeset.get('created_at')]
 
     return dict(zip(keys, values))
 
@@ -115,7 +117,7 @@ class Analyse(object):
         self.comment = changeset.get('comment', None)
         self.source = changeset.get('source', None)
         self.imagery_used = changeset.get('imagery_used', None)
-        self.date = changeset.get('created_at')
+        self.date = datetime.strptime(changeset.get('created_at'), '%Y-%m-%dT%H:%M:%SZ')
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False

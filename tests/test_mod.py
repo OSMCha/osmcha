@@ -1,6 +1,8 @@
 from pytest import raises
 from shapely.geometry import Polygon
 
+from datetime import datetime
+
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
 from osmcha.changeset import get_metadata, changeset_info, InvalidChangesetError
@@ -34,6 +36,7 @@ def test_invalid_changeset_error():
 def test_analyse_init():
     ch_dict = {
         'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Put data from Google',
@@ -50,11 +53,13 @@ def test_analyse_init():
     assert ch.editor == 'Potlatch 2'
     assert ch.comment == 'Put data from Google'
     assert ch.user == 'JustTest'
+    assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
 
 
 def test_analyse_verify_words():
     ch_dict = {
         'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Put data from Google',
@@ -73,6 +78,7 @@ def test_analyse_verify_words():
 
     ch_dict = {
         'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'source': 'Waze',
@@ -91,6 +97,7 @@ def test_analyse_verify_words():
 
     ch_dict = {
         'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
@@ -112,6 +119,7 @@ def test_analyse_verify_words():
 def test_analyse_verify_editor():
     ch_dict = {
         'created_by': 'JOSM/1.5 (8339 en)',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
@@ -127,6 +135,7 @@ def test_analyse_verify_editor():
 
     ch_dict = {
         'created_by': 'Merkaartor 0.18 (de)',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
@@ -142,6 +151,7 @@ def test_analyse_verify_editor():
 
     ch_dict = {
         'created_by': 'Level0 v1.1',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
@@ -157,6 +167,7 @@ def test_analyse_verify_editor():
 
     ch_dict = {
         'created_by': 'QGIS plugin',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
@@ -172,6 +183,7 @@ def test_analyse_verify_editor():
 
     ch_dict = {
         'created_by': 'iD 1.7.3',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
@@ -187,6 +199,7 @@ def test_analyse_verify_editor():
 
     ch_dict = {
         'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
