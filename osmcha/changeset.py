@@ -114,9 +114,9 @@ class Analyse(object):
         self.user = changeset.get('user')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
-        self.comment = changeset.get('comment', None)
-        self.source = changeset.get('source', None)
-        self.imagery_used = changeset.get('imagery_used', None)
+        self.comment = changeset.get('comment', 'Not reported')
+        self.source = changeset.get('source', 'Not reported')
+        self.imagery_used = changeset.get('imagery_used', 'Not reported')
         self.date = datetime.strptime(changeset.get('created_at'), '%Y-%m-%dT%H:%M:%SZ')
         self.suspicion_reasons = []
         self.is_suspect = False
