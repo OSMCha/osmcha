@@ -38,7 +38,12 @@ def test_analyse_init():
         'version': '2.3',
         'comment': 'Put data from Google',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     assert ch.id == 1
@@ -54,7 +59,12 @@ def test_analyse_verify_words():
         'version': '2.3',
         'comment': 'Put data from Google',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_words()
@@ -67,7 +77,12 @@ def test_analyse_verify_words():
         'version': '2.3',
         'source': 'Waze',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_words()
@@ -81,7 +96,12 @@ def test_analyse_verify_words():
         'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
         'source': 'Bing',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_words()
@@ -94,7 +114,12 @@ def test_analyse_verify_editor():
         'created_by': 'JOSM/1.5 (8339 en)',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()
@@ -104,7 +129,12 @@ def test_analyse_verify_editor():
         'created_by': 'Merkaartor 0.18 (de)',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()
@@ -114,7 +144,12 @@ def test_analyse_verify_editor():
         'created_by': 'Level0 v1.1',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()
@@ -124,7 +159,12 @@ def test_analyse_verify_editor():
         'created_by': 'QGIS plugin',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()
@@ -134,7 +174,12 @@ def test_analyse_verify_editor():
         'created_by': 'iD 1.7.3',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()
@@ -144,7 +189,12 @@ def test_analyse_verify_editor():
         'created_by': 'Potlatch 2',
         'comment': 'add pois',
         'id': '1',
-        'user': 'JustTest'
+        'user': 'JustTest',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
     }
     ch = Analyse(ch_dict)
     ch.verify_editor()

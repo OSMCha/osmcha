@@ -115,6 +115,7 @@ class Analyse(object):
         self.comment = changeset.get('comment', None)
         self.source = changeset.get('source', None)
         self.imagery_used = changeset.get('imagery_used', None)
+        self.date = changeset.get('created_at')
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
