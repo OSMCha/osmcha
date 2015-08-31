@@ -56,6 +56,11 @@ def test_analyse_init():
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
 
 
+def test_changeset_without_coords():
+    ch = Analyse(33624206)
+    assert ch.bbox == 'GEOMETRYCOLLECTION EMPTY'
+
+
 def test_analyse_verify_words():
     ch_dict = {
         'created_by': 'Potlatch 2',

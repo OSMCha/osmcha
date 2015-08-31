@@ -44,14 +44,19 @@ def get_metadata(changeset):
 
 
 def get_bounds(changeset):
-    """Get the bounds of the changeset and return it as a Polygon object."""
-    return Polygon([
-        (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
-        (float(changeset.get('max_lon')), float(changeset.get('min_lat'))),
-        (float(changeset.get('max_lon')), float(changeset.get('max_lat'))),
-        (float(changeset.get('min_lon')), float(changeset.get('max_lat'))),
-        (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
-    ])
+    """Get the bounds of the changeset and return it as a Polygon object. If
+    the changeset has not coordinates (case of the changesets that deal only
+    with relations), return a empty Polygon."""
+    try:
+        return Polygon([
+            (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
+            (float(changeset.get('max_lon')), float(changeset.get('min_lat'))),
+            (float(changeset.get('max_lon')), float(changeset.get('max_lat'))),
+            (float(changeset.get('min_lon')), float(changeset.get('max_lat'))),
+            (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
+        ])
+    except TypeError:
+        return Polygon()
 
 
 class ChangesetList(object):
@@ -123,6 +128,7 @@ class Analyse(object):
         self.powerfull_editor = False
 
     def full_analysis(self):
+        """Execute count and verify_words functions."""
         self.count()
         self.verify_words()
 
@@ -162,6 +168,8 @@ class Analyse(object):
                     break
 
     def verify_editor(self):
+        """Verify if the software used in the changeset is a powerfull_editor.
+        """
         for editor in ['josm', 'level0', 'merkaartor', 'qgis']:
             if editor in self.editor.lower():
                 self.powerfull_editor = True
