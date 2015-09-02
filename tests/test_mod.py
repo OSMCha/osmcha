@@ -5,7 +5,7 @@ from datetime import datetime
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
-from osmcha.changeset import get_metadata, changeset_info, InvalidChangesetError
+from osmcha.changeset import InvalidChangesetError
 
 
 def test_changeset_list():

@@ -8,6 +8,7 @@ from tempfile import mkdtemp
 import gzip
 import xml.etree.ElementTree as ET
 import json
+from shutil import rmtree
 
 
 class InvalidChangesetError(Exception):
@@ -85,6 +86,10 @@ class ChangesetList(object):
             download(changeset_file, self.path)
 
         self.xml = ET.fromstring(gzip.open(self.filename).read())
+
+        # delete folder created to download the file
+        if not isfile(changeset_file):
+            rmtree(self.path)
 
     def get_area(self, geojson):
         """Read the first feature from the geojson and return it as a Polygon
