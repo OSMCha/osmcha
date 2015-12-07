@@ -2,12 +2,19 @@
 
 import click
 
-import osmcha
+from osmcha.changeset import Analyse
 
 
 @click.command('osmcha')
-@click.argument('count', type=int, metavar='N')
-def cli(count):
-    """Echo a value `N` number of times"""
-    for i in range(count):
-        click.echo(osmcha.has_legs)
+@click.argument('id', type=int, metavar='N')
+def cli(id):
+    """Analyse a changeset."""
+    ch = Analyse(id)
+    ch.full_analysis()
+    click.echo(
+        'Created: %s. Modified: %s. Deleted: %s' % (ch.create, ch.modify, ch.delete)
+    )
+    if ch.is_suspect:
+        click.echo('The changeset %s is suspect!' % id)
+    else:
+        click.echo('The changeset %s is not suspect!' % id)

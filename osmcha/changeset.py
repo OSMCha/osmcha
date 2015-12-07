@@ -20,10 +20,10 @@ def changeset_info(changeset):
     changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
-    keys += ['id', 'user', 'bbox', 'created_at']
+    keys += ['id', 'user', 'uid', 'bbox', 'created_at']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
-    values += [changeset.get('id'), changeset.get('user'), get_bounds(changeset),
-        changeset.get('created_at')]
+    values += [changeset.get('id'), changeset.get('user'), changeset.get('uid'),
+        get_bounds(changeset), changeset.get('created_at')]
 
     return dict(zip(keys, values))
 
@@ -99,7 +99,7 @@ class ChangesetList(object):
         self.area = Polygon(geojson['features'][0]['geometry']['coordinates'][0])
 
     def filter(self):
-        """Filter the changesets """
+        """Filter the changesets that intersects with the geojson geometry."""
         self.content = [
             ch for ch in self.xml.getchildren() if get_bounds(ch).intersects(self.area)
         ]
@@ -122,6 +122,7 @@ class Analyse(object):
     def set_fields(self, changeset):
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
+        self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', 'Not reported')
@@ -144,11 +145,12 @@ class Analyse(object):
         suspect_words = [
             'google',
             'nokia',
-            'here',
+            ' here',
             'waze',
             'apple',
             'tomtom',
-            'import'
+            'import',
+            'wikimapia',
         ]
 
         if self.source:

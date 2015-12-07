@@ -14,6 +14,7 @@ def test_changeset_list():
     assert c.changesets[0]['id'] == '31982803'
     assert c.changesets[0]['created_by'] == 'Potlatch 2'
     assert c.changesets[0]['user'] == 'GarrettB'
+    assert c.changesets[0]['uid'] == '352373'
     assert c.changesets[0]['comment'] == 'Added Emerald Pool Waterfall'
     assert c.changesets[0]['bbox'] == Polygon([
         (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
@@ -42,6 +43,7 @@ def test_analyse_init():
         'comment': 'Put data from Google',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -70,6 +72,7 @@ def test_analyse_verify_words():
         'comment': 'Put data from Google',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -89,6 +92,7 @@ def test_analyse_verify_words():
         'source': 'Waze',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -109,6 +113,7 @@ def test_analyse_verify_words():
         'source': 'Bing',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -120,6 +125,45 @@ def test_analyse_verify_words():
     assert ch.is_suspect
     assert 'suspect_word' in ch.suspicion_reasons
 
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
+        'build': '2.3-650-gad99430',
+        'version': '2.3',
+        'source': 'Data from Here',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_words()
+    assert ch.is_suspect
+    assert 'suspect_word' in ch.suspicion_reasons
+
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
+        'build': '2.3-650-gad99430',
+        'version': '2.3',
+        'source': 'Somewhere in Brazil',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+        ])
+    }
+    ch = Analyse(ch_dict)
+    ch.verify_words()
+    assert not ch.is_suspect
+
 
 def test_analyse_verify_editor():
     ch_dict = {
@@ -128,6 +172,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -144,6 +189,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -160,6 +206,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -176,6 +223,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -192,6 +240,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -208,6 +257,7 @@ def test_analyse_verify_editor():
         'comment': 'add pois',
         'id': '1',
         'user': 'JustTest',
+        'uid': '123123',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
