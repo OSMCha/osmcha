@@ -55,6 +55,7 @@ def test_analyse_init():
     assert ch.editor == 'Potlatch 2'
     assert ch.comment == 'Put data from Google'
     assert ch.user == 'JustTest'
+    assert ch.uid == '123123'
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
 
 
