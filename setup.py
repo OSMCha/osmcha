@@ -8,7 +8,7 @@ with codecs_open('README.rst', encoding='utf-8') as f:
 
 
 setup(name='osmcha',
-      version='0.0.2',
+      version='0.1',
       description="Python package to detect suspicious OSM changesets",
       long_description=long_description,
       classifiers=[],

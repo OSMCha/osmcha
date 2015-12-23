@@ -16,8 +16,8 @@ class InvalidChangesetError(Exception):
 
 
 def changeset_info(changeset):
-    """Return a dictionary with id, user, bounds and all the tags of the
-    changeset.
+    """Return a dictionary with id, user, user_id, bounds and date of creation
+    and all the tags of the changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
     keys += ['id', 'user', 'uid', 'bbox', 'created_at']
@@ -120,6 +120,9 @@ class Analyse(object):
             )
 
     def set_fields(self, changeset):
+        """Set the fields of this class with the metadata of the analysed
+        changeset.
+        """
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
         self.uid = changeset.get('uid')
@@ -177,7 +180,7 @@ class Analyse(object):
     def verify_editor(self):
         """Verify if the software used in the changeset is a powerfull_editor.
         """
-        for editor in ['josm', 'level0', 'merkaartor', 'qgis']:
+        for editor in ['josm', 'level0', 'merkaartor', 'qgis', 'arcgis']:
             if editor in self.editor.lower():
                 self.powerfull_editor = True
                 break

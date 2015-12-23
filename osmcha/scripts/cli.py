@@ -6,9 +6,9 @@ from osmcha.changeset import Analyse
 
 
 @click.command('osmcha')
-@click.argument('id', type=int, metavar='N')
+@click.argument('id', type=int, metavar='changeset_id')
 def cli(id):
-    """Analyse a changeset."""
+    """Analyse an OpenStreetMap changeset."""
     ch = Analyse(id)
     ch.full_analysis()
     click.echo(
