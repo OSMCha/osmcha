@@ -306,5 +306,5 @@ def test_get_user_details():
     c = ChangesetList('tests/245.osm.gz')
     changeset = c.changesets[0]
     user_details = get_user_details(changeset)
-    assert 'GarrettB' in user_details['contributor']['name']
-    assert user_details['contributor']['blocks'] == "0"
+    assert 'GarrettB' in user_details['name']
+    assert user_details['blocks'] == "0"

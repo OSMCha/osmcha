@@ -45,9 +45,16 @@ def get_metadata(changeset):
 
 
 def get_user_details(changeset):
-    """Get user details from http://hdyc.neis-one.org/ and return it as JSON"""
+    """Get useful user details and return it as a dictionary.
+
+    API: http://hdyc.neis-one.org/
+    """
     url = 'http://hdyc.neis-one.org/user/{}'.format(changeset.get('user'))
-    return json.loads(requests.get(url).content)
+    user_details = json.loads(requests.get(url).content)
+    return {
+        'blocks': user_details['contributor']['blocks'],
+        'name': user_details['contributor']['name'],
+    }
 
 
 def get_bounds(changeset):
