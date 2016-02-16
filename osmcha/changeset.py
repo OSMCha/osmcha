@@ -44,16 +44,16 @@ def get_metadata(changeset):
     return ET.fromstring(requests.get(url).content).getchildren()[0]
 
 
-def get_user_details(changeset):
-    """Get useful user details and return it as a dictionary.
+def get_user_details(user):
+    """Takes a user's name as input and returns user details as a dictionary.
 
-    API: http://hdyc.neis-one.org/
+    API used: http://hdyc.neis-one.org/
     """
-    url = 'http://hdyc.neis-one.org/user/{}'.format(changeset.get('user'))
+    url = 'http://hdyc.neis-one.org/user/{}'.format(user)
     user_details = json.loads(requests.get(url).content)
     return {
-        'blocks': user_details['contributor']['blocks'],
         'name': user_details['contributor']['name'],
+        'blocks': int(user_details['contributor']['blocks']),
     }
 
 
@@ -122,7 +122,11 @@ class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
     def __init__(self, changeset):
         if type(changeset) in [int, str]:
-            self.set_fields(changeset_info(get_metadata(changeset)))
+            # self.set_fields(changeset_info(get_metadata(changeset)))
+            changeset_details = changeset_info(get_metadata(changeset))
+            user = changeset_details['user']
+            changeset_details['user_details'] = get_user_details(user)
+            self.set_fields(changeset_details)
         elif type(changeset) == dict:
             self.set_fields(changeset)
         else:
@@ -148,6 +152,7 @@ class Analyse(object):
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
+        self.user_details = changeset.get('user_details')
 
     def full_analysis(self):
         """Execute count and verify_words functions."""

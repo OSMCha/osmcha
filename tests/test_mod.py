@@ -303,8 +303,16 @@ def test_analyse_mass_deletion():
 
 
 def test_get_user_details():
-    c = ChangesetList('tests/245.osm.gz')
-    changeset = c.changesets[0]
-    user_details = get_user_details(changeset)
-    assert 'GarrettB' in user_details['name']
-    assert user_details['blocks'] == "0"
+    user = 'GarrettB'
+    user_details = get_user_details(user)
+    assert user in user_details['name']
+    assert user_details['blocks'] == 0
+
+
+def test_analyse_user_details():
+    ch = Analyse(31450443)
+    ch.full_analysis()
+    assert ch.user_details
+    print ch.user_details['name']
+    assert ch.user_details['name'] == 'Tobsen Laufi'
+    assert ch.user_details['blocks'] == 0
