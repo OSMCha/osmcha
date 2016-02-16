@@ -6,6 +6,7 @@ from datetime import datetime
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
 from osmcha.changeset import InvalidChangesetError
+from osmcha.changeset import get_user_details
 
 
 def test_changeset_list():
@@ -299,3 +300,11 @@ def test_analyse_mass_deletion():
     ch.full_analysis()
     assert ch.is_suspect
     assert 'mass deletion' in ch.suspicion_reasons
+
+
+def test_get_user_details():
+    c = ChangesetList('tests/245.osm.gz')
+    changeset = c.changesets[0]
+    user_details = get_user_details(changeset)
+    assert 'GarrettB' in user_details['contributor']['name']
+    assert user_details['contributor']['blocks'] == "0"

@@ -44,6 +44,12 @@ def get_metadata(changeset):
     return ET.fromstring(requests.get(url).content).getchildren()[0]
 
 
+def get_user_details(changeset):
+    """Get user details from http://hdyc.neis-one.org/ and return it as JSON"""
+    url = 'http://hdyc.neis-one.org/user/{}'.format(changeset.get('user'))
+    return json.loads(requests.get(url).content)
+
+
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a Polygon object. If
     the changeset has not coordinates (case of the changesets that deal only
