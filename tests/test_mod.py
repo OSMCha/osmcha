@@ -313,8 +313,7 @@ def test_analyse_user_details():
     ch = Analyse(31450443)
     ch.full_analysis()
     assert ch.user_details
-    print ch.user_details['since']
-    assert ch.user_details['name'] == 'Tobsen Laufi'
-    assert ch.user_details['blocks'] == 0
-    assert ch.user_details['no'] == 1
-    assert ch.user_details['since'] == datetime(2015, 01, 15)
+    assert ch.user_details['contributor_name'] == 'Tobsen Laufi'
+    assert ch.user_details['contributor_blocks'] == 0
+    assert ch.user_details['changesets_no'] == 1
+    assert ch.user_details['contributor_since'] == datetime(2015, 01, 15)

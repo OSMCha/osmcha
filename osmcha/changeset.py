@@ -53,10 +53,10 @@ def get_user_details(user):
     url = 'http://hdyc.neis-one.org/user/{}'.format(user)
     user_details = json.loads(requests.get(url).content)
     return {
-        'name': user_details['contributor']['name'],
-        'blocks': int(user_details['contributor']['blocks']),
-        'since': dateutil.parser.parse(user_details['contributor']['since']),
-        'no': int(user_details['changesets']['no']),
+        'contributor_name': user_details['contributor']['name'],
+        'contributor_blocks': int(user_details['contributor']['blocks']),
+        'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
+        'changesets_no': int(user_details['changesets']['no']),
     }
 
 
