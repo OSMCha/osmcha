@@ -9,6 +9,7 @@ import gzip
 import xml.etree.ElementTree as ET
 import json
 from shutil import rmtree
+import dateutil.parser
 
 
 class InvalidChangesetError(Exception):
@@ -54,6 +55,8 @@ def get_user_details(user):
     return {
         'name': user_details['contributor']['name'],
         'blocks': int(user_details['contributor']['blocks']),
+        'since': dateutil.parser.parse(user_details['contributor']['since']),
+        'no': int(user_details['changesets']['no']),
     }
 
 
