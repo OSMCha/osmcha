@@ -25,6 +25,7 @@ setup(name='osmcha',
           'requests',
           'homura',
           'shapely',
+          'python-dateutil',
       ],
       extras_require={
           'test': ['pytest'],
