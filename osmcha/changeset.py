@@ -9,6 +9,7 @@ import gzip
 import xml.etree.ElementTree as ET
 import json
 from shutil import rmtree
+import dateutil.parser
 
 
 class InvalidChangesetError(Exception):
@@ -51,9 +52,30 @@ def get_user_details(user):
     """
     url = 'http://hdyc.neis-one.org/user/{}'.format(user)
     user_details = json.loads(requests.get(url).content)
+
     return {
-        'name': user_details['contributor']['name'],
-        'blocks': int(user_details['contributor']['blocks']),
+        'contributor_name': user_details['contributor']['name'],
+        'contributor_blocks': int(user_details['contributor']['blocks']),
+        'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
+        'contributor_traces': int(user_details['contributor']['traces']),
+
+        'nodes_c': int(user_details['nodes']['c']),
+        'nodes_m': int(user_details['nodes']['m']),
+        'nodes_d': int(user_details['nodes']['d']),
+
+        'ways_c': int(user_details['ways']['c']),
+        'ways_m': int(user_details['ways']['m']),
+        'ways_d': int(user_details['ways']['d']),
+
+        'relations_c': int(user_details['relations']['c']),
+        'relations_m': int(user_details['relations']['m']),
+        'relations_d': int(user_details['relations']['d']),
+
+        'changesets_no': int(user_details['changesets']['no']),
+        'changesets_changes': int(user_details['changesets']['changes']),
+        'changesets_f_tstamp': dateutil.parser.parse(user_details['changesets']['f_tstamp']),
+        'changesets_l_tstamp': dateutil.parser.parse(user_details['changesets']['l_tstamp']),
+        'changesets_mapping_days': user_details['changesets']['mapping_days'],  # Format: 2012=6;2013=9;2014=4
     }
 
 
