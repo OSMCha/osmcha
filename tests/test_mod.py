@@ -313,7 +313,29 @@ def test_analyse_user_details():
     ch = Analyse(31450443)
     ch.full_analysis()
     assert ch.user_details
-    assert ch.user_details['contributor_name'] == 'Tobsen Laufi'
-    assert ch.user_details['contributor_blocks'] == 0
-    assert ch.user_details['changesets_no'] == 1
-    assert ch.user_details['contributor_since'] == datetime(2015, 01, 15)
+
+    assert ch.user_details['contributor_name'] is not None
+    assert ch.user_details['contributor_blocks'] is not None
+    assert ch.user_details['contributor_since'] is not None
+    assert ch.user_details['contributor_name'] is not None
+
+    assert ch.user_details['nodes_c'] is not None
+    assert ch.user_details['nodes_m'] is not None
+    assert ch.user_details['nodes_d'] is not None
+    assert ch.user_details['nodes_c'] is not None
+
+    assert ch.user_details['ways_c'] is not None
+    assert ch.user_details['ways_m'] is not None
+    assert ch.user_details['ways_d'] is not None
+    assert ch.user_details['ways_c'] is not None
+
+    assert ch.user_details['relations_c'] is not None
+    assert ch.user_details['relations_m'] is not None
+    assert ch.user_details['relations_d'] is not None
+    assert ch.user_details['relations_c'] is not None
+
+    assert ch.user_details['changesets_no'] is not None
+    assert ch.user_details['changesets_changes'] is not None
+    assert ch.user_details['changesets_f_tstamp'] is not None
+    assert ch.user_details['changesets_l_tstamp'] is not None
+    assert ch.user_details['changesets_mapping_days'] is not None

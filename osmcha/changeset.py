@@ -56,7 +56,28 @@ def get_user_details(user):
         'contributor_name': user_details['contributor']['name'],
         'contributor_blocks': int(user_details['contributor']['blocks']),
         'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
+        'contributor_name': user_details['contributor']['name'],
+
+        'nodes_c': user_details['nodes']['c'],
+        'nodes_m': user_details['nodes']['m'],
+        'nodes_d': user_details['nodes']['d'],
+        'nodes_c': user_details['nodes']['c'],
+
+        'ways_c': user_details['ways']['c'],
+        'ways_m': user_details['ways']['m'],
+        'ways_d': user_details['ways']['d'],
+        'ways_c': user_details['ways']['c'],
+
+        'relations_c': user_details['relations']['c'],
+        'relations_m': user_details['relations']['m'],
+        'relations_d': user_details['relations']['d'],
+        'relations_c': user_details['relations']['c'],
+
         'changesets_no': int(user_details['changesets']['no']),
+        'changesets_changes': int(user_details['changesets']['changes']),
+        'changesets_f_tstamp': user_details['changesets']['f_tstamp'],
+        'changesets_l_tstamp': user_details['changesets']['l_tstamp'],
+        'changesets_mapping_days': user_details['changesets']['mapping_days'],  # Format: 2012=6;2013=9;2014=4
     }
 
 
