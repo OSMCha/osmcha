@@ -314,28 +314,25 @@ def test_analyse_user_details():
     ch.full_analysis()
     assert ch.user_details
 
-    assert ch.user_details['contributor_name'] is not None
-    assert ch.user_details['contributor_blocks'] is not None
-    assert ch.user_details['contributor_since'] is not None
-    assert ch.user_details['contributor_name'] is not None
+    assert ch.user_details['contributor_name'] == 'Tobsen Laufi'
+    assert ch.user_details['contributor_blocks'] == 0
+    assert ch.user_details['contributor_since'] == datetime(2015, 01, 15)
+    assert ch.user_details['contributor_traces'] == 0
 
-    assert ch.user_details['nodes_c'] is not None
-    assert ch.user_details['nodes_m'] is not None
-    assert ch.user_details['nodes_d'] is not None
-    assert ch.user_details['nodes_c'] is not None
+    assert ch.user_details['nodes_c'] == 0
+    assert ch.user_details['nodes_m'] == 0
+    assert ch.user_details['nodes_d'] == 975
 
-    assert ch.user_details['ways_c'] is not None
-    assert ch.user_details['ways_m'] is not None
-    assert ch.user_details['ways_d'] is not None
-    assert ch.user_details['ways_c'] is not None
+    assert ch.user_details['ways_c'] == 0
+    assert ch.user_details['ways_m'] == 0
+    assert ch.user_details['ways_d'] == 43
 
-    assert ch.user_details['relations_c'] is not None
-    assert ch.user_details['relations_m'] is not None
-    assert ch.user_details['relations_d'] is not None
-    assert ch.user_details['relations_c'] is not None
+    assert ch.user_details['relations_c'] == 0
+    assert ch.user_details['relations_m'] == 0
+    assert ch.user_details['relations_d'] == 1
 
-    assert ch.user_details['changesets_no'] is not None
-    assert ch.user_details['changesets_changes'] is not None
-    assert ch.user_details['changesets_f_tstamp'] is not None
-    assert ch.user_details['changesets_l_tstamp'] is not None
-    assert ch.user_details['changesets_mapping_days'] is not None
+    assert ch.user_details['changesets_no'] == 1
+    assert ch.user_details['changesets_changes'] == 1019
+    assert ch.user_details['changesets_f_tstamp'] == datetime(2015, 05, 25, 16, 30, 43)
+    assert ch.user_details['changesets_l_tstamp'] == datetime(2015, 05, 25, 16, 30, 43)
+    assert ch.user_details['changesets_mapping_days'] == '2015=1'
