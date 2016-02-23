@@ -314,6 +314,7 @@ def test_analyse_user_details():
     ch.full_analysis()
     assert ch.user_details
 
+    assert ch.user_details['contributor_uid'] == 2578646
     assert ch.user_details['contributor_name'] == 'Tobsen Laufi'
     assert ch.user_details['contributor_blocks'] == 0
     assert ch.user_details['contributor_since'] == datetime(2015, 01, 15)

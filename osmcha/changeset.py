@@ -54,6 +54,7 @@ def get_user_details(user):
     user_details = json.loads(requests.get(url).content)
 
     return {
+        'contributor_uid': int(user_details['contributor']['uid']),
         'contributor_name': user_details['contributor']['name'],
         'contributor_blocks': int(user_details['contributor']['blocks']),
         'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
