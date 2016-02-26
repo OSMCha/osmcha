@@ -55,7 +55,7 @@ def get_user_details(user):
 
     return {
         'contributor_uid': int(user_details['contributor']['uid']),
-        'contributor_name': user_details['contributor']['name'],
+        'contributor_name': unicode(user_details['contributor']['name']),
         'contributor_blocks': int(user_details['contributor']['blocks']),
         'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
         'contributor_traces': int(user_details['contributor']['traces']),
@@ -72,7 +72,7 @@ def get_user_details(user):
         'relations_m': int(user_details['relations']['m']),
         'relations_d': int(user_details['relations']['d']),
 
-        'changesets_no': int(user_details['changesets']['no']),
+        'changesets_no': int(user_details['changesets']['no']) if user_details['changesets'].has_key['no'] else None,
         'changesets_changes': int(user_details['changesets']['changes']),
         'changesets_f_tstamp': dateutil.parser.parse(user_details['changesets']['f_tstamp']),
         'changesets_l_tstamp': dateutil.parser.parse(user_details['changesets']['l_tstamp']),
