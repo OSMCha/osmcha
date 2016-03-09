@@ -309,6 +309,12 @@ def test_get_user_details():
     assert user_details['blocks'] == 0
 
 
+def test_get_user_details_for_non_existing_user():
+    user = 'Non Existing User'
+    user_details = get_user_details(user)
+    assert user_details == dict()
+
+
 def test_analyse_user_details():
     ch = Analyse(31450443)
     ch.full_analysis()

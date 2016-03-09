@@ -50,35 +50,40 @@ def get_user_details(user):
 
     API used: http://hdyc.neis-one.org/
     """
-    url = 'http://hdyc.neis-one.org/user/%s' % user
-    user_details = json.loads(requests.get(url).content)
+    ## TODO: This is a hack. We need to think through this scenario well.
+    try:
+        url = 'http://hdyc.neis-one.org/user/%s' % user
+        user_details = json.loads(requests.get(url).content)
+        print 'user_details: ' + json.dumps(user_details)
+        print "user_details['changesets']': " + str(user_details['changesets'])
 
-    return {
-        'contributor_uid': int(user_details['contributor']['uid']),
-        'contributor_name': user_details['contributor']['name'],
-        'contributor_blocks': int(user_details['contributor']['blocks']),
-        'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
-        'contributor_traces': int(user_details['contributor']['traces']),
+        return {
+            'contributor_uid': int(user_details['contributor']['uid']),
+            'contributor_name': user_details['contributor']['name'],
+            'contributor_blocks': int(user_details['contributor']['blocks']),
+            'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
+            'contributor_traces': int(user_details['contributor']['traces']),
 
-        'nodes_c': int(user_details['nodes']['c']),
-        'nodes_m': int(user_details['nodes']['m']),
-        'nodes_d': int(user_details['nodes']['d']),
+            'nodes_c': int(user_details['nodes']['c']),
+            'nodes_m': int(user_details['nodes']['m']),
+            'nodes_d': int(user_details['nodes']['d']),
 
-        'ways_c': int(user_details['ways']['c']),
-        'ways_m': int(user_details['ways']['m']),
-        'ways_d': int(user_details['ways']['d']),
+            'ways_c': int(user_details['ways']['c']),
+            'ways_m': int(user_details['ways']['m']),
+            'ways_d': int(user_details['ways']['d']),
 
-        'relations_c': int(user_details['relations']['c']),
-        'relations_m': int(user_details['relations']['m']),
-        'relations_d': int(user_details['relations']['d']),
+            'relations_c': int(user_details['relations']['c']),
+            'relations_m': int(user_details['relations']['m']),
+            'relations_d': int(user_details['relations']['d']),
 
-        'changesets_no': int(user_details['changesets']['no']) if user_details['changesets'].has_key('no') else None,
-        'changesets_changes': int(user_details['changesets']['changes']) if user_details['changesets'].has_key('changes') else None,
-        'changesets_f_tstamp': dateutil.parser.parse(user_details['changesets']['f_tstamp']) if user_details['changesets'].has_key('f_tstamp') else None,
-        'changesets_l_tstamp': dateutil.parser.parse(user_details['changesets']['l_tstamp']) if user_details['changesets'].has_key('l_tstamp') else None,
-        'changesets_mapping_days': user_details['changesets']['mapping_days'] if user_details['changesets'].has_key('mapping_days') else None,  # Format: 2012=6;2013=9;2014=4
-    }
-
+            'changesets_no': int(user_details['changesets']['no']) if user_details['changesets'].has_key('no') else None,
+            'changesets_changes': int(user_details['changesets']['changes']) if user_details['changesets'].has_key('changes') else None,
+            'changesets_f_tstamp': dateutil.parser.parse(user_details['changesets']['f_tstamp']) if user_details['changesets'].has_key('f_tstamp') else None,
+            'changesets_l_tstamp': dateutil.parser.parse(user_details['changesets']['l_tstamp']) if user_details['changesets'].has_key('l_tstamp') else None,
+            'changesets_mapping_days': user_details['changesets']['mapping_days'] if user_details['changesets'].has_key('mapping_days') else None,  # Format: 2012=6;2013=9;2014=4
+        }
+    except Exception:
+        return dict()
 
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a Polygon object. If
