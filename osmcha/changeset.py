@@ -63,18 +63,26 @@ def get_user_details(user):
             'contributor_blocks': int(user_details['contributor']['blocks']),
             'contributor_since': dateutil.parser.parse(user_details['contributor']['since']),
             'contributor_traces': int(user_details['contributor']['traces']),
+            'contributor_img': user_details['contributor'].get('img', None),
 
             'nodes_c': int(user_details['nodes']['c']),
             'nodes_m': int(user_details['nodes']['m']),
             'nodes_d': int(user_details['nodes']['d']),
+            'nodes_rank': int(user_details['nodes']['r']),
 
             'ways_c': int(user_details['ways']['c']),
             'ways_m': int(user_details['ways']['m']),
             'ways_d': int(user_details['ways']['d']),
+            'ways_rank': int(user_details['ways']['r']),
 
             'relations_c': int(user_details['relations']['c']),
             'relations_m': int(user_details['relations']['m']),
             'relations_d': int(user_details['relations']['d']),
+            'relations_rank': int(user_details['relations']['r']),
+
+            'notes_opened': int(user_details['notes']['op']),
+            'notes_commented': int(user_details['notes']['co']),
+            'notes_closed': int(user_details['notes']['cl']),
 
             'changesets_no': int(user_details['changesets']['no']) if user_details['changesets'].has_key('no') else None,
             'changesets_changes': int(user_details['changesets']['changes']) if user_details['changesets'].has_key('changes') else None,
@@ -170,6 +178,8 @@ class Analyse(object):
         """
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
+        self.user_score = 0
+        self.changeset_score = 0
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
@@ -185,7 +195,80 @@ class Analyse(object):
     def full_analysis(self):
         """Execute count and verify_words functions."""
         self.count()
+        self.calc_user_score()
+        self.calc_changeset_score()
         self.verify_words()
+
+    def calc_user_score(self):
+        user_details = self.user_details
+        if not user_details:
+            return
+        if user_details['contributor_blocks'] > 0:
+            self.user_score = self.user_score - (user_details['contributor_blocks'] * 500)
+        if user_details['contributor_img']:
+            self.user_score = self.user_score + 50
+        else:
+            self.user_score = self.user_score - 25
+        if user_details['contributor_traces'] and user_details['contributor_traces'] > 0:
+            self.user_score = self.user_score + 25
+        mapping_days = self.get_mapping_days()
+        if mapping_days <= 10:
+            self.user_score = self.user_score - 25
+        if mapping_days > 200:
+            self.user_score = self.user_score + 25
+        if user_details['changesets_changes'] > 10000:
+            self.user_score = self.user_score + 50
+        if user_details['notes_opened'] > 50:
+            self.user_score = self.user_score + 50
+        if user_details['notes_commented'] > 10:
+            self.user_score = self.user_score + 50
+        if user_details['notes_closed'] > 10:
+            self.user_score = self.user_score + 50
+        if user_details['nodes_rank'] < 5000:
+            self.user_score = self.user_score + 50
+        if user_details['ways_rank'] < 5000:
+            self.user_score = self.user_score + 50
+        if user_details['relations_rank'] < 5000:
+            self.user_score = self.user_score + 50
+        return
+
+    def get_mapping_days(self):
+        mapping_days_string = self.user_details['changesets_mapping_days']
+        years = mapping_days_string.split(';')
+        total_days = 0
+        for year in years:
+            days = int(year.split('=')[1])
+            total_days = total_days + days
+        return total_days
+
+    def calc_changeset_score(self):
+        total_changes = self.create + self.modify + self.delete
+        if total_changes > 3000:
+            self.changeset_score = self.changeset_score - 100
+        if self.delete > 200 and self.create == 0 and self.modify == 0:
+            self.changeset_score = self.changeset_score - 50
+        is_whitelisted_editor = self.is_whitelisted_editor()
+        if not is_whitelisted_editor:
+            self.changeset_score = self.changeset_score - 100
+        if self.comment == '' or self.comment == 'Not reported':
+            self.changeset_score = self.changeset_score - 50
+        if 'google' in self.imagery_used.lower():
+            self.changeset_score = self.changeset_score - 100
+        if 'google' in self.source.lower():
+            self.changeset_score = self.changeset_score - 100
+        return
+
+    def is_whitelisted_editor(self):
+        whitelist = ['josm', 'id', 'portlatch', 'vespucci']
+        if self.editor is None:
+            return False
+        editor_lower = self.editor.lower()
+        is_whitelisted = False
+        for w in whitelist:
+            if w in editor_lower:
+                is_whitelisted = True
+        return is_whitelisted
+
 
     def verify_words(self):
         """Verify the fields source and comment of the changeset for some
