@@ -180,6 +180,8 @@ class Analyse(object):
         self.user = changeset.get('user')
         self.user_score = 0
         self.changeset_score = 0
+        self.user_score_details = []
+        self.changeset_score_details = []
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
@@ -199,37 +201,44 @@ class Analyse(object):
         self.calc_changeset_score()
         self.verify_words()
 
+    def set_user_score(self, score, reason):
+        self.user_score = self.user_score + score
+        self.user_score_details.append({
+            'score': score,
+            'reason': reason
+        })
+
     def calc_user_score(self):
         user_details = self.user_details
         if not user_details:
             return
         if user_details['contributor_blocks'] > 0:
-            self.user_score = self.user_score - (user_details['contributor_blocks'] * 500)
+            self.set_user_score(0 - user_details['contributor_blocks'] * 500, 'has blocks')
         if user_details['contributor_img']:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'has avatar')
         else:
-            self.user_score = self.user_score - 25
+            self.set_user_score(-25, 'has no avatar')
         if user_details['contributor_traces'] and user_details['contributor_traces'] > 0:
-            self.user_score = self.user_score + 25
+            self.set_user_score(25, 'has traces')
         mapping_days = self.get_mapping_days()
         if mapping_days <= 10:
-            self.user_score = self.user_score - 25
+            self.set_user_score(-25, 'less than 10 mapping days')
         if mapping_days > 200:
-            self.user_score = self.user_score + 25
+            self.set_user_score(25, 'has more than 200 mapping days')
         if user_details['changesets_changes'] > 10000:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'has more than 10,000 changes')
         if user_details['notes_opened'] > 50:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'opened more than 50 notes')
         if user_details['notes_commented'] > 10:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'commented on more than 10 notes')
         if user_details['notes_closed'] > 10:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'closed more than 10 notes')
         if user_details['nodes_rank'] < 5000:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'nodes rank < 5,000')
         if user_details['ways_rank'] < 5000:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'ways rank < 5,000')
         if user_details['relations_rank'] < 5000:
-            self.user_score = self.user_score + 50
+            self.set_user_score(50, 'relations rank < 5,000')
         return
 
     def get_mapping_days(self):
@@ -244,19 +253,26 @@ class Analyse(object):
     def calc_changeset_score(self):
         total_changes = self.create + self.modify + self.delete
         if total_changes > 3000:
-            self.changeset_score = self.changeset_score - 100
+            self.set_changeset_score(-100, 'more than 3,000 changes')
         if self.delete > 200 and self.create == 0 and self.modify == 0:
-            self.changeset_score = self.changeset_score - 50
+            self.set_changeset_score(-50, 'only deletions, more than 200')
         is_whitelisted_editor = self.is_whitelisted_editor()
         if not is_whitelisted_editor:
-            self.changeset_score = self.changeset_score - 100
+            self.set_changeset_score(-100, 'editor used not in whitelist')
         if self.comment == '' or self.comment == 'Not reported':
-            self.changeset_score = self.changeset_score - 50
+            self.set_changeset_score(-50, 'no changeset comment')
         if 'google' in self.imagery_used.lower():
-            self.changeset_score = self.changeset_score - 100
+            self.set_changeset_score(-100, 'google in imagery used')
         if 'google' in self.source.lower():
-            self.changeset_score = self.changeset_score - 100
+            self.set_changeset_score(-100, 'google in source')
         return
+
+    def set_changeset_score(self, score, reason):
+        self.changeset_score = self.changeset_score + score
+        self.changeset_score_details.append({
+            'score': score,
+            'reason': reason
+        })
 
     def is_whitelisted_editor(self):
         whitelist = ['josm', 'id', 'portlatch', 'vespucci']
