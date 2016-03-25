@@ -275,7 +275,7 @@ class Analyse(object):
         })
 
     def is_whitelisted_editor(self):
-        whitelist = ['josm', 'id', 'portlatch', 'vespucci']
+        whitelist = ['josm', 'id', 'potlatch', 'vespucci']
         if self.editor is None:
             return False
         editor_lower = self.editor.lower()
