@@ -44,7 +44,7 @@ def get_metadata(changeset):
     url = 'http://www.openstreetmap.org/api/0.6/changeset/%s' % changeset
     return ET.fromstring(requests.get(url).content).getchildren()[0]
 
-
+# FIXME: lets remove this and cleanup
 def get_user_details(user):
     """Takes a user's name as input and returns user details as a dictionary.
 
@@ -201,6 +201,7 @@ class Analyse(object):
         self.calc_changeset_score()
         self.verify_words()
 
+    # FIXME: we should no longer use this
     def set_user_score(self, score, reason):
         self.user_score = self.user_score + score
         self.user_score_details.append({
@@ -208,6 +209,7 @@ class Analyse(object):
             'reason': reason
         })
 
+    # FIXME: we should no longer use this
     def calc_user_score(self):
         user_details = self.user_details
         if not user_details:
@@ -241,6 +243,7 @@ class Analyse(object):
             self.set_user_score(50, 'relations rank < 5,000')
         return
 
+    # FIXME: remove
     def get_mapping_days(self):
         mapping_days_string = self.user_details['changesets_mapping_days']
         years = mapping_days_string.split(';')
@@ -250,6 +253,7 @@ class Analyse(object):
             total_days = total_days + days
         return total_days
 
+    # FIXME: i dont think we are using a score any more, remove.
     def calc_changeset_score(self):
         total_changes = self.create + self.modify + self.delete
         if total_changes > 3000:
@@ -267,6 +271,7 @@ class Analyse(object):
             self.set_changeset_score(-100, 'google in source')
         return
 
+    # FIXME: this too
     def set_changeset_score(self, score, reason):
         self.changeset_score = self.changeset_score + score
         self.changeset_score_details.append({
