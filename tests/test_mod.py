@@ -6,7 +6,6 @@ from datetime import datetime
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
 from osmcha.changeset import InvalidChangesetError
-from osmcha.changeset import get_user_details
 
 
 def test_changeset_list():
@@ -21,7 +20,7 @@ def test_changeset_list():
         (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
         (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
         (-71.0646843, 44.2371354)
-    ])
+        ])
 
 
 def test_changeset_list_with_filters():
@@ -49,8 +48,8 @@ def test_analyse_init():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     assert ch.id == 1
     assert ch.editor == 'Potlatch 2'
@@ -79,8 +78,8 @@ def test_analyse_verify_words():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_words()
     assert ch.is_suspect
@@ -99,8 +98,8 @@ def test_analyse_verify_words():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_words()
     assert ch.is_suspect
@@ -120,8 +119,8 @@ def test_analyse_verify_words():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_words()
     assert ch.is_suspect
@@ -140,8 +139,8 @@ def test_analyse_verify_words():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_words()
     assert ch.is_suspect
@@ -160,8 +159,8 @@ def test_analyse_verify_words():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_words()
     assert not ch.is_suspect
@@ -179,8 +178,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor
@@ -196,8 +195,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor
@@ -213,8 +212,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor
@@ -230,8 +229,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor
@@ -247,8 +246,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor is False
@@ -264,8 +263,8 @@ def test_analyse_verify_editor():
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
             (-71.0646843, 44.2371354)
-        ])
-    }
+            ])
+        }
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor is False
@@ -300,46 +299,3 @@ def test_analyse_mass_deletion():
     ch.full_analysis()
     assert ch.is_suspect
     assert 'mass deletion' in ch.suspicion_reasons
-
-
-def test_get_user_details():
-    user = 'GarrettB'
-    user_details = get_user_details(user)
-    assert user in user_details['name']
-    assert user_details['blocks'] == 0
-
-
-def test_get_user_details_for_non_existing_user():
-    user = 'Non Existing User'
-    user_details = get_user_details(user)
-    assert user_details == dict()
-
-
-def test_analyse_user_details():
-    ch = Analyse(31450443)
-    ch.full_analysis()
-    assert ch.user_details
-
-    assert ch.user_details['contributor_uid'] == 2578646
-    assert ch.user_details['contributor_name'] == 'Tobsen Laufi'
-    assert ch.user_details['contributor_blocks'] == 0
-    assert ch.user_details['contributor_since'] == datetime(2015, 01, 15)
-    assert ch.user_details['contributor_traces'] == 0
-
-    assert ch.user_details['nodes_c'] == 0
-    assert ch.user_details['nodes_m'] == 0
-    assert ch.user_details['nodes_d'] == 975
-
-    assert ch.user_details['ways_c'] == 0
-    assert ch.user_details['ways_m'] == 0
-    assert ch.user_details['ways_d'] == 43
-
-    assert ch.user_details['relations_c'] == 0
-    assert ch.user_details['relations_m'] == 0
-    assert ch.user_details['relations_d'] == 1
-
-    assert ch.user_details['changesets_no'] == 1
-    assert ch.user_details['changesets_changes'] == 1019
-    assert ch.user_details['changesets_f_tstamp'] == datetime(2015, 05, 25, 16, 30, 43)
-    assert ch.user_details['changesets_l_tstamp'] == datetime(2015, 05, 25, 16, 30, 43)
-    assert ch.user_details['changesets_mapping_days'] == '2015=1'
