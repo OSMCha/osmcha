@@ -133,7 +133,6 @@ class Analyse(object):
         """
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
-        self.changeset_score = 0
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
