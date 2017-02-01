@@ -299,3 +299,10 @@ def test_analyse_mass_deletion():
     ch.full_analysis()
     assert ch.is_suspect
     assert 'mass deletion' in ch.suspicion_reasons
+
+
+def test_no_duplicated_reason():
+    ch = Analyse(45632780)
+    ch.full_analysis()
+    assert ch.is_suspect
+    assert ch.suspicion_reasons == ['suspect_word']

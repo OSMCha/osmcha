@@ -189,6 +189,8 @@ class Analyse(object):
                     self.suspicion_reasons.append('suspect_word')
                     break
 
+        self.suspicion_reasons = list(set(self.suspicion_reasons))
+
     def verify_editor(self):
         """Verify if the software used in the changeset is a powerfull_editor.
         """
