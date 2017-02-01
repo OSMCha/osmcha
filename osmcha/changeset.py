@@ -133,10 +133,7 @@ class Analyse(object):
         """
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
-        self.user_score = 0
         self.changeset_score = 0
-        self.user_score_details = []
-        self.changeset_score_details = []
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
         self.bbox = changeset.get('bbox').wkt
@@ -150,7 +147,6 @@ class Analyse(object):
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
-        self.user_details = changeset.get('user_details')
 
     def full_analysis(self):
         """Execute count and verify_words functions."""
