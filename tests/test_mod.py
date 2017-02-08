@@ -287,6 +287,13 @@ def test_analyse_import():
     assert 'possible import' in ch.suspicion_reasons
 
 
+def test_custom_create_value():
+    ch = Analyse(10013029, create_threshold=2000)
+    ch.full_analysis()
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
+
+
 def test_analyse_mass_modification():
     ch = Analyse(19863853)
     ch.full_analysis()
@@ -294,11 +301,49 @@ def test_analyse_mass_modification():
     assert 'mass modification' in ch.suspicion_reasons
 
 
+def test_custom_modify_value():
+    ch = Analyse(19863853, modify_threshold=1200)
+    ch.full_analysis()
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
+
+
 def test_analyse_mass_deletion():
     ch = Analyse(31450443)
     ch.full_analysis()
     assert ch.is_suspect
     assert 'mass deletion' in ch.suspicion_reasons
+
+
+def test_custom_delete_value():
+    ch = Analyse(45901540, delete_threshold=100)
+    ch.full_analysis()
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
+
+
+def test_custom_percentage():
+    ch = Analyse(45082154)
+    ch.full_analysis()
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
+
+    ch = Analyse(45082154, percentage=0.5)
+    ch.full_analysis()
+    assert ch.is_suspect
+    assert 'mass modification' in ch.suspicion_reasons
+
+
+def test_custom_top_threshold():
+    ch = Analyse(45862717)
+    ch.full_analysis()
+    assert ch.is_suspect
+    assert 'possible import' in ch.suspicion_reasons
+
+    ch = Analyse(45862717, top_threshold=1100)
+    ch.full_analysis()
+    assert ch.is_suspect is False
+    assert len(ch.suspicion_reasons) == 0
 
 
 def test_no_duplicated_reason():

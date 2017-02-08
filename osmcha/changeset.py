@@ -113,7 +113,8 @@ class ChangesetList(object):
 
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
-    def __init__(self, changeset):
+    def __init__(self, changeset, create_threshold=200, modify_threshold=200,
+            delete_threshold=30, percentage=0.7, top_threshold=1000):
         if type(changeset) in [int, str]:
             # self.set_fields(changeset_info(get_metadata(changeset)))
             changeset_details = changeset_info(get_metadata(changeset))
@@ -126,6 +127,11 @@ class Analyse(object):
                 returned by the changeset_info function
                 """
                 )
+        self.create_threshold = create_threshold
+        self.modify_threshold = modify_threshold
+        self.delete_threshold = delete_threshold
+        self.percentage = percentage
+        self.top_threshold = top_threshold
 
     def set_fields(self, changeset):
         """Set the fields of this class with the metadata of the analysed
@@ -210,14 +216,17 @@ class Analyse(object):
         self.delete = actions.count('delete')
         self.verify_editor()
 
-        if (self.create / len(actions) > 0.7 and self.create > 200 and
-                (self.powerfull_editor or self.create > 1000)):
+        if (self.create / len(actions) > self.percentage and
+                self.create > self.create_threshold and
+                (self.powerfull_editor or self.create > self.top_threshold)):
             self.is_suspect = True
             self.suspicion_reasons.append('possible import')
-        elif self.modify / len(actions) > 0.7 and self.modify > 200:
+        elif (self.modify / len(actions) > self.percentage and
+                self.modify > self.modify_threshold):
             self.is_suspect = True
             self.suspicion_reasons.append('mass modification')
-        elif ((self.delete / len(actions) > 0.7 and self.delete > 30) or
-                self.delete > 1000):
+        elif ((self.delete / len(actions) > self.percentage and
+                self.delete > self.delete_threshold) or
+                self.delete > self.top_threshold):
             self.is_suspect = True
             self.suspicion_reasons.append('mass deletion')
