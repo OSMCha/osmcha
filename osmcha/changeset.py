@@ -242,17 +242,20 @@ class Analyse(object):
         self.delete = actions.count('delete')
         self.verify_editor()
 
-        if (self.create / len(actions) > self.percentage and
-                self.create > self.create_threshold and
-                (self.powerfull_editor or self.create > self.top_threshold)):
-            self.is_suspect = True
-            self.suspicion_reasons.append('possible import')
-        elif (self.modify / len(actions) > self.percentage and
-                self.modify > self.modify_threshold):
-            self.is_suspect = True
-            self.suspicion_reasons.append('mass modification')
-        elif ((self.delete / len(actions) > self.percentage and
-                self.delete > self.delete_threshold) or
-                self.delete > self.top_threshold):
-            self.is_suspect = True
-            self.suspicion_reasons.append('mass deletion')
+        try:
+            if (self.create / len(actions) > self.percentage and
+                    self.create > self.create_threshold and
+                    (self.powerfull_editor or self.create > self.top_threshold)):
+                self.is_suspect = True
+                self.suspicion_reasons.append('possible import')
+            elif (self.modify / len(actions) > self.percentage and
+                    self.modify > self.modify_threshold):
+                self.is_suspect = True
+                self.suspicion_reasons.append('mass modification')
+            elif ((self.delete / len(actions) > self.percentage and
+                    self.delete > self.delete_threshold) or
+                    self.delete > self.top_threshold):
+                self.is_suspect = True
+                self.suspicion_reasons.append('mass deletion')
+        except ZeroDivisionError:
+            print('It seems this changeset was redacted')

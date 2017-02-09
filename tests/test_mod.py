@@ -175,7 +175,7 @@ def test_analyse_verify_words():
         'created_at': '2015-04-25T18:08:46Z',
         'build': '2.3-650-gad99430',
         'version': '2.3',
-        'source': 'Somewhere in Brazil',
+        'comment': 'Somewhere in Brazil',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -375,3 +375,9 @@ def test_no_duplicated_reason():
     ch.full_analysis()
     assert ch.is_suspect
     assert ch.suspicion_reasons == ['suspect_word']
+
+
+def test_redacted_changeset():
+    ch = Analyse(34495147)
+    ch.full_analysis()
+    assert ch.is_suspect is False
