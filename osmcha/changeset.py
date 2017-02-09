@@ -19,7 +19,7 @@ class InvalidChangesetError(Exception):
 
 
 def changeset_info(changeset):
-    """Return a dictionary with id, user, user_id, bounds and date of creation
+    """Return a dictionary with id, user, user_id, bounds, date of creation
     and all the tags of the changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
@@ -34,7 +34,7 @@ def changeset_info(changeset):
 
 
 def get_changeset(changeset):
-    """Get the changeset using OSM API and return the content as a XML
+    """Get the changeset using the OSM API and return the content as a XML
     ElementTree.
     """
     url = 'http://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
@@ -44,7 +44,7 @@ def get_changeset(changeset):
 
 
 def get_metadata(changeset):
-    """Get the metadata of the changeset using OSM API and return it as a XML
+    """Get the metadata of a changeset using the OSM API and return it as a XML
     ElementTree.
     """
     url = 'http://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
@@ -54,7 +54,7 @@ def get_metadata(changeset):
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a Polygon object. If
     the changeset has not coordinates (case of the changesets that deal only
-    with relations), return a empty Polygon."""
+    with relations), it returns an empty Polygon."""
     try:
         return Polygon([
             (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
@@ -68,12 +68,21 @@ def get_bounds(changeset):
 
 
 def make_regex(words):
+    """Concatenate a list of words in a regular expression that detects any
+    word that starts with some of the words in a text.
+    """
     return r'|'.join(
         ["^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
         )
 
 
 def find_words(text, suspect_words, excluded_words=[]):
+    """Check if a text has some of the suspect words (or words that starts with
+    one of the suspect words). You can set words to be excluded of the search,
+    so you can remove false positives like 'important' be detected when you
+    search by 'import'. Return True if the number of suspect words found is
+    greater than the number of excluded words.
+    """
     text = text.lower()
     suspect_found = [i for i in re.finditer(make_regex(suspect_words), text)]
     if len(excluded_words) > 0:
@@ -90,8 +99,9 @@ def find_words(text, suspect_words, excluded_words=[]):
 
 
 class ChangesetList(object):
-    """Read replication changeset file  and return a list with information about
-    all changesets.
+    """Read replication changeset file and return a list with the XML data of
+    each changeset. You can filter the changesets by passing a geojson file with
+    a Polygon of your area of interest.
     """
 
     def __init__(self, changeset_file, geojson=None):
@@ -141,7 +151,6 @@ class Analyse(object):
     def __init__(self, changeset, create_threshold=200, modify_threshold=200,
             delete_threshold=30, percentage=0.7, top_threshold=1000):
         if type(changeset) in [int, str]:
-            # self.set_fields(changeset_info(get_metadata(changeset)))
             changeset_details = changeset_info(get_metadata(changeset))
             self.set_fields(changeset_details)
         elif type(changeset) == dict:
@@ -179,7 +188,7 @@ class Analyse(object):
         self.powerfull_editor = False
 
     def full_analysis(self):
-        """Execute count and verify_words functions."""
+        """Execute the count and verify_words methods."""
         self.count()
         self.verify_words()
 

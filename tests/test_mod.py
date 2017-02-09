@@ -25,15 +25,17 @@ excluded_words = ['important', 'somewhere']
 
 
 def test_find_words():
+    """Test the changeset.find_words function and the regular expressions."""
     assert find_words('import buildings', suspect_words)
     assert find_words('imported Importação unimportant', suspect_words, excluded_words)
-    assert find_words('important edit', suspect_words, excluded_words) is False
+    assert not find_words('important edit', suspect_words, excluded_words)
     assert find_words('Where is here?', suspect_words, excluded_words)
     assert find_words('GooGle is not important', suspect_words, excluded_words)
-    assert find_words('somewhere in the world', suspect_words, excluded_words) is False
+    assert not find_words('somewhere in the world', suspect_words, excluded_words)
 
 
 def test_changeset_list():
+    """Test ChangesetList class."""
     c = ChangesetList('tests/245.osm.gz')
     assert len(c.changesets) == 25
     assert c.changesets[0]['id'] == '31982803'
@@ -49,6 +51,7 @@ def test_changeset_list():
 
 
 def test_changeset_list_with_filters():
+    """Test ChangesetList class filter method."""
     c = ChangesetList('tests/245.osm.gz', 'tests/map.geojson')
     assert len(c.changesets) == 1
     assert c.changesets[0]['id'] == '31982803'
@@ -379,6 +382,9 @@ def test_no_duplicated_reason():
 
 
 def test_redacted_changeset():
+    """Redacted changesets have no metadata so those cases need to be threated
+    to avoid a ZeroDivisionError in the Analyse.count() method.
+    """
     ch = Analyse(34495147)
     ch.full_analysis()
     assert ch.is_suspect is False
