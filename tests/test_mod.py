@@ -5,7 +5,31 @@ from datetime import datetime
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
+from osmcha.changeset import find_words
 from osmcha.changeset import InvalidChangesetError
+
+
+suspect_words = [
+    'google',
+    'nokia',
+    'here',
+    'waze',
+    'apple',
+    'tomtom',
+    'import',
+    'wikimapia',
+    ]
+
+excluded_words = ['important', 'somewhere']
+
+
+def test_find_words():
+    assert find_words('import buildings', suspect_words)
+    assert find_words('imported Importação unimportant', suspect_words, excluded_words)
+    assert find_words('important edit', suspect_words, excluded_words) is False
+    assert find_words('Where is here?', suspect_words, excluded_words)
+    assert find_words('GooGle is not important', suspect_words, excluded_words)
+    assert find_words('somewhere in the world', suspect_words, excluded_words) is False
 
 
 def test_changeset_list():

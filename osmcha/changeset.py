@@ -1,6 +1,7 @@
 from __future__ import division
 import gzip
 import json
+import re
 from datetime import datetime
 from os.path import basename, join, isfile
 from shutil import rmtree
@@ -63,6 +64,28 @@ def get_bounds(changeset):
             ])
     except TypeError:
         return Polygon()
+
+
+def make_regex(words):
+    return r'|'.join(
+        ["^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
+        )
+
+
+def find_words(text, suspect_words, excluded_words=[]):
+    text = text.lower()
+    suspect_found = [i for i in re.finditer(make_regex(suspect_words), text)]
+    if len(excluded_words) > 0:
+        excluded_found = [i for i in re.finditer(make_regex(excluded_words), text)]
+        if len(suspect_found) > len(excluded_found):
+            return True
+        else:
+            return False
+    else:
+        if len(suspect_found) > 0:
+            return True
+        else:
+            return False
 
 
 class ChangesetList(object):
@@ -160,13 +183,13 @@ class Analyse(object):
         self.verify_words()
 
     def verify_words(self):
-        """Verify the fields source and comment of the changeset for some
-        suspect words.
+        """Verify the fields source, imagery_used and comment of the changeset
+        for some suspect words.
         """
         suspect_words = [
             'google',
             'nokia',
-            ' here',
+            'here',
             'waze',
             'apple',
             'tomtom',
@@ -174,16 +197,18 @@ class Analyse(object):
             'wikimapia',
             ]
 
+        excluded_words = [
+            'important', 'somewhere', 'nowhere', 'anywhere', 'where'
+            ]
+
+        if self.comment:
+            if find_words(self.comment, suspect_words, excluded_words):
+                self.is_suspect = True
+                self.suspicion_reasons.append('suspect_word')
+
         if self.source:
             for word in suspect_words:
                 if word in self.source.lower():
-                    self.is_suspect = True
-                    self.suspicion_reasons.append('suspect_word')
-                    break
-
-        if self.comment:
-            for word in suspect_words:
-                if word in self.comment.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
