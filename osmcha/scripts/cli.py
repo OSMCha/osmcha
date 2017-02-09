@@ -1,5 +1,4 @@
-# Skeleton of a CLI
-
+# -*- coding: utf-8 -*-
 import click
 
 from osmcha.changeset import Analyse

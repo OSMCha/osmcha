@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from click.testing import CliRunner
 
 from osmcha.scripts.cli import cli
