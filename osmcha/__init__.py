@@ -1,3 +1,2 @@
 # osmcha
-
-has_legs = False
+__version__ = '0.2'
