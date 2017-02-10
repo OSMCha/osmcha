@@ -199,7 +199,6 @@ class Analyse(object):
         suspect_words = [
             'google',
             'nokia',
-            'here',
             'waze',
             'apple',
             'tomtom',
@@ -208,7 +207,7 @@ class Analyse(object):
             ]
 
         excluded_words = [
-            'important', 'somewhere', 'nowhere', 'anywhere', 'where'
+            'important',
             ]
 
         if self.comment:

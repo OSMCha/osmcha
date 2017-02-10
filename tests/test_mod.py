@@ -13,7 +13,6 @@ from osmcha.changeset import InvalidChangesetError
 suspect_words = [
     'google',
     'nokia',
-    'here',
     'waze',
     'apple',
     'tomtom',
@@ -21,7 +20,7 @@ suspect_words = [
     'wikimapia',
     ]
 
-excluded_words = ['important', 'somewhere']
+excluded_words = ['important']
 
 
 def test_find_words():
@@ -29,7 +28,7 @@ def test_find_words():
     assert find_words('import buildings', suspect_words)
     assert find_words('imported Importação unimportant', suspect_words, excluded_words)
     assert not find_words('important edit', suspect_words, excluded_words)
-    assert find_words('Where is here?', suspect_words, excluded_words)
+    assert not find_words('Where is here?', suspect_words, excluded_words)
     assert find_words('GooGle is not important', suspect_words, excluded_words)
     assert not find_words('somewhere in the world', suspect_words, excluded_words)
 
@@ -140,26 +139,6 @@ def test_analyse_verify_words():
         'version': '2.3',
         'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
         'source': 'Bing',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_words()
-    assert ch.is_suspect
-    assert 'suspect_word' in ch.suspicion_reasons
-
-    ch_dict = {
-        'created_by': 'Potlatch 2',
-        'created_at': '2015-04-25T18:08:46Z',
-        'build': '2.3-650-gad99430',
-        'version': '2.3',
-        'source': 'Data from Here',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
