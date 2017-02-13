@@ -1,8 +1,8 @@
 osmcha
-============
+=======
 
-OSM Changeset Analyser, ``osmcha``, a Python package to detect suspicious OSM changesets.
-It was made to use with `osmcha-django <https://github.com/willemarcel/osmcha-django>`_,
+OSM Changeset Analyser, ``osmcha``, is a Python package to detect suspicious OSM changesets.
+It was designed to be used with `osmcha-django <https://github.com/willemarcel/osmcha-django>`_,
 but also can be used standalone or in other projects.
 
 .. image:: https://travis-ci.org/willemarcel/osmcha.svg
@@ -10,7 +10,6 @@ but also can be used standalone or in other projects.
 
 .. image:: https://coveralls.io/repos/willemarcel/osmcha/badge.svg
     :target: https://coveralls.io/r/willemarcel/osmcha
-
 
 Installation
 ============
@@ -48,6 +47,38 @@ Finally, to analyse an especific changeset, do:
   ch = Analyse(changeset_id)
   ch.full_analysis()
 
+Customizing Detection Rules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can customize the detection rules by defining your prefered values when initializing the ``Analyze`` class. See below the default values.
+
+.. code-block:: python
+
+  ch = Analyse(changeset_id, create_threshold=200, modify_threshold=200,
+    delete_threshold=30, percentage=0.7, top_threshold=1000)
+
+Detection Rules
+===============
+
+``osmcha`` works by analysing how many map features the changeset created, modified or deleted, and by verifying the presence of some suspect words in the ``comment``, ``source`` and ``imagery_used`` fields of the changeset. Furthermore, we also consider if the software editor used allows to import data or to do mass edits. We consider ``powerfull editors``: JOSM, Merkaartor, level0, QGIS and ArcGis.
+
+In the ``Usage`` section, you can see how to customize some of these detection rules.
+
+Possible Import
+---------------
+
+We tag a changeset as a ``possible import`` if the number of created elements is greater than 70% of the sum of elements created, modified and deleted and if it creates more than 1000 elements or 200 elements case it used one of the ``powerfull editors``.
+
+Mass Modification
+-----------------
+
+We consider a changeset as a ``mass modification`` if the number of modified elements is greater than 70% of the sum of elements created, modified and deleted and if it modifies more than 200 elements.
+
+Mass Deletion
+-------------
+
+All changesets that delete more than 1000 elements are considered a ``mass deletion``. If the changeset deletes between 200 and 1000 elements and the number of deleted elements is greater than 70% of the sum of elements created, modified and deleted it's also tagged as a ``mass deletion``.
+
 Command Line Interface
 ----------------------
 
@@ -55,7 +86,6 @@ The command line interface can be used to verify an especific changeset directly
 from the terminal.
 
 Usage: ``osmcha <changeset_id>``
-
 
 Tests
 ======
