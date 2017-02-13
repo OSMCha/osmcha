@@ -1,6 +1,7 @@
 from codecs import open as codecs_open
 from setuptools import setup, find_packages
 
+import osmcha
 
 # Get the long description from the relevant file
 with codecs_open('README.rst', encoding='utf-8') as f:
@@ -8,11 +9,11 @@ with codecs_open('README.rst', encoding='utf-8') as f:
 
 
 setup(name='osmcha',
-      version='0.1',
-      description="Python package to detect suspicious OSM changesets",
+      version=osmcha.__version__,
+      description="Python package to detect suspicious OpenStreetMap changesets",
       long_description=long_description,
       classifiers=[],
-      keywords=['openstreetmap', 'osm', 'QA'],
+      keywords=['openstreetmap', 'osm', 'QA', 'gis'],
       author="Wille Marcel",
       author_email='wille@wille.blog.br',
       url='https://github.com/willemarcel/osmcha',
@@ -25,6 +26,7 @@ setup(name='osmcha',
           'requests',
           'homura',
           'shapely',
+          'python-dateutil',
       ],
       extras_require={
           'test': ['pytest'],

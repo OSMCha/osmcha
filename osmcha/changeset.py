@@ -1,14 +1,17 @@
+# -*- coding: utf-8 -*-
+from __future__ import division
+import gzip
+import json
+import re
+from datetime import datetime
+from os.path import basename, join, isfile
+from shutil import rmtree
+from tempfile import mkdtemp
+import xml.etree.ElementTree as ET
+
 import requests
 from homura import download
 from shapely.geometry import Polygon
-
-from os.path import basename, join, isfile
-from datetime import datetime
-from tempfile import mkdtemp
-import gzip
-import xml.etree.ElementTree as ET
-import json
-from shutil import rmtree
 
 
 class InvalidChangesetError(Exception):
@@ -16,38 +19,42 @@ class InvalidChangesetError(Exception):
 
 
 def changeset_info(changeset):
-    """Return a dictionary with id, user, user_id, bounds and date of creation
+    """Return a dictionary with id, user, user_id, bounds, date of creation
     and all the tags of the changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
     keys += ['id', 'user', 'uid', 'bbox', 'created_at']
     values = [tag.attrib.get('v') for tag in changeset.getchildren()]
-    values += [changeset.get('id'), changeset.get('user'), changeset.get('uid'),
-        get_bounds(changeset), changeset.get('created_at')]
+    values += [
+        changeset.get('id'), changeset.get('user'), changeset.get('uid'),
+        get_bounds(changeset), changeset.get('created_at')
+        ]
 
     return dict(zip(keys, values))
 
 
 def get_changeset(changeset):
-    """Get the changeset using OSM API and return the content as a XML
+    """Get the changeset using the OSM API and return the content as a XML
     ElementTree.
     """
-    url = 'http://www.openstreetmap.org/api/0.6/changeset/%s/download' % changeset
+    url = 'http://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
+        changeset
+        )
     return ET.fromstring(requests.get(url).content)
 
 
 def get_metadata(changeset):
-    """Get the metadata of the changeset using OSM API and return it as a XML
+    """Get the metadata of a changeset using the OSM API and return it as a XML
     ElementTree.
     """
-    url = 'http://www.openstreetmap.org/api/0.6/changeset/%s' % changeset
+    url = 'http://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
     return ET.fromstring(requests.get(url).content).getchildren()[0]
 
 
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a Polygon object. If
     the changeset has not coordinates (case of the changesets that deal only
-    with relations), return a empty Polygon."""
+    with relations), it returns an empty Polygon."""
     try:
         return Polygon([
             (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
@@ -55,14 +62,46 @@ def get_bounds(changeset):
             (float(changeset.get('max_lon')), float(changeset.get('max_lat'))),
             (float(changeset.get('min_lon')), float(changeset.get('max_lat'))),
             (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
-        ])
+            ])
     except TypeError:
         return Polygon()
 
 
+def make_regex(words):
+    """Concatenate a list of words in a regular expression that detects any
+    word that starts with some of the words in a text.
+    """
+    return r'|'.join(
+        ["^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
+        )
+
+
+def find_words(text, suspect_words, excluded_words=[]):
+    """Check if a text has some of the suspect words (or words that starts with
+    one of the suspect words). You can set words to be excluded of the search,
+    so you can remove false positives like 'important' be detected when you
+    search by 'import'. Return True if the number of suspect words found is
+    greater than the number of excluded words.
+    """
+    text = text.lower()
+    suspect_found = [i for i in re.finditer(make_regex(suspect_words), text)]
+    if len(excluded_words) > 0:
+        excluded_found = [i for i in re.finditer(make_regex(excluded_words), text)]
+        if len(suspect_found) > len(excluded_found):
+            return True
+        else:
+            return False
+    else:
+        if len(suspect_found) > 0:
+            return True
+        else:
+            return False
+
+
 class ChangesetList(object):
-    """Read replication changeset file  and return a list with information about
-    all changesets.
+    """Read replication changeset file and return a list with the XML data of
+    each changeset. You can filter the changesets by passing a geojson file with
+    a Polygon of your area of interest.
     """
 
     def __init__(self, changeset_file, geojson=None):
@@ -101,15 +140,19 @@ class ChangesetList(object):
     def filter(self):
         """Filter the changesets that intersects with the geojson geometry."""
         self.content = [
-            ch for ch in self.xml.getchildren() if get_bounds(ch).intersects(self.area)
-        ]
+            ch
+            for ch in self.xml.getchildren()
+            if get_bounds(ch).intersects(self.area)
+            ]
 
 
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
-    def __init__(self, changeset):
+    def __init__(self, changeset, create_threshold=200, modify_threshold=200,
+            delete_threshold=30, percentage=0.7, top_threshold=1000):
         if type(changeset) in [int, str]:
-            self.set_fields(changeset_info(get_metadata(changeset)))
+            changeset_details = changeset_info(get_metadata(changeset))
+            self.set_fields(changeset_details)
         elif type(changeset) == dict:
             self.set_fields(changeset)
         else:
@@ -117,7 +160,12 @@ class Analyse(object):
                 """The changeset param needs to be a changeset id or a dict
                 returned by the changeset_info function
                 """
-            )
+                )
+        self.create_threshold = create_threshold
+        self.modify_threshold = modify_threshold
+        self.delete_threshold = delete_threshold
+        self.percentage = percentage
+        self.top_threshold = top_threshold
 
     def set_fields(self, changeset):
         """Set the fields of this class with the metadata of the analysed
@@ -131,41 +179,45 @@ class Analyse(object):
         self.comment = changeset.get('comment', 'Not reported')
         self.source = changeset.get('source', 'Not reported')
         self.imagery_used = changeset.get('imagery_used', 'Not reported')
-        self.date = datetime.strptime(changeset.get('created_at'), '%Y-%m-%dT%H:%M:%SZ')
+        self.date = datetime.strptime(
+            changeset.get('created_at'),
+            '%Y-%m-%dT%H:%M:%SZ'
+            )
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
 
     def full_analysis(self):
-        """Execute count and verify_words functions."""
+        """Execute the count and verify_words methods."""
         self.count()
         self.verify_words()
 
     def verify_words(self):
-        """Verify the fields source and comment of the changeset for some
-        suspect words.
+        """Verify the fields source, imagery_used and comment of the changeset
+        for some suspect words.
         """
         suspect_words = [
             'google',
             'nokia',
-            ' here',
             'waze',
             'apple',
             'tomtom',
             'import',
             'wikimapia',
-        ]
+            ]
+
+        excluded_words = [
+            'important',
+            ]
+
+        if self.comment:
+            if find_words(self.comment, suspect_words, excluded_words):
+                self.is_suspect = True
+                self.suspicion_reasons.append('suspect_word')
 
         if self.source:
             for word in suspect_words:
                 if word in self.source.lower():
-                    self.is_suspect = True
-                    self.suspicion_reasons.append('suspect_word')
-                    break
-
-        if self.comment:
-            for word in suspect_words:
-                if word in self.comment.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
@@ -176,6 +228,8 @@ class Analyse(object):
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
+
+        self.suspicion_reasons = list(set(self.suspicion_reasons))
 
     def verify_editor(self):
         """Verify if the software used in the changeset is a powerfull_editor.
@@ -197,15 +251,20 @@ class Analyse(object):
         self.delete = actions.count('delete')
         self.verify_editor()
 
-        if self.create / len(actions) > 0.7 and \
-            self.create > 200 and \
-            (self.powerfull_editor or self.create > 1000):
-            self.is_suspect = True
-            self.suspicion_reasons.append('possible import')
-        elif self.modify / len(actions) > 0.7 and self.modify > 200:
-            self.is_suspect = True
-            self.suspicion_reasons.append('mass modification')
-        elif (self.delete / len(actions) > 0.7 and self.delete > 30) or \
-            self.delete > 1000:
-            self.is_suspect = True
-            self.suspicion_reasons.append('mass deletion')
+        try:
+            if (self.create / len(actions) > self.percentage and
+                    self.create > self.create_threshold and
+                    (self.powerfull_editor or self.create > self.top_threshold)):
+                self.is_suspect = True
+                self.suspicion_reasons.append('possible import')
+            elif (self.modify / len(actions) > self.percentage and
+                    self.modify > self.modify_threshold):
+                self.is_suspect = True
+                self.suspicion_reasons.append('mass modification')
+            elif ((self.delete / len(actions) > self.percentage and
+                    self.delete > self.delete_threshold) or
+                    self.delete > self.top_threshold):
+                self.is_suspect = True
+                self.suspicion_reasons.append('mass deletion')
+        except ZeroDivisionError:
+            print('It seems this changeset was redacted')
