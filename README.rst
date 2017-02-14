@@ -38,7 +38,8 @@ or from your local filesystem.
 
 ``c.changesets`` will return a list containing data of all the changesets listed in the file.
 
-You can filter the changesets passing a `GeoJSON` file with a polygon with your interest area to `ChangesetList` as the second argument.
+You can filter the changesets passing a `GeoJSON` file with a polygon with your
+interest area to `ChangesetList` as the second argument.
 
 Finally, to analyse an especific changeset, do:
 
@@ -50,34 +51,14 @@ Finally, to analyse an especific changeset, do:
 Customizing Detection Rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can customize the detection rules by defining your prefered values when initializing the ``Analyze`` class. See below the default values.
+You can customize the detection rules by defining your prefered values when
+initializing the ``Analyze`` class. See below the default values.
 
 .. code-block:: python
 
   ch = Analyse(changeset_id, create_threshold=200, modify_threshold=200,
-    delete_threshold=30, percentage=0.7, top_threshold=1000)
-
-Detection Rules
-===============
-
-``osmcha`` works by analysing how many map features the changeset created, modified or deleted, and by verifying the presence of some suspect words in the ``comment``, ``source`` and ``imagery_used`` fields of the changeset. Furthermore, we also consider if the software editor used allows to import data or to do mass edits. We consider ``powerfull editors``: JOSM, Merkaartor, level0, QGIS and ArcGis.
-
-In the ``Usage`` section, you can see how to customize some of these detection rules.
-
-Possible Import
----------------
-
-We tag a changeset as a ``possible import`` if the number of created elements is greater than 70% of the sum of elements created, modified and deleted and if it creates more than 1000 elements or 200 elements case it used one of the ``powerfull editors``.
-
-Mass Modification
------------------
-
-We consider a changeset as a ``mass modification`` if the number of modified elements is greater than 70% of the sum of elements created, modified and deleted and if it modifies more than 200 elements.
-
-Mass Deletion
--------------
-
-All changesets that delete more than 1000 elements are considered a ``mass deletion``. If the changeset deletes between 200 and 1000 elements and the number of deleted elements is greater than 70% of the sum of elements created, modified and deleted it's also tagged as a ``mass deletion``.
+    delete_threshold=30, percentage=0.7, top_threshold=1000,
+    suspect_words=[...], illegal_sources=[...], excluded_words=[...])
 
 Command Line Interface
 ----------------------
@@ -86,6 +67,54 @@ The command line interface can be used to verify an especific changeset directly
 from the terminal.
 
 Usage: ``osmcha <changeset_id>``
+
+Detection Rules
+===============
+
+``osmcha`` works by analysing how many map features the changeset created, modified
+or deleted, and by verifying the presence of some suspect words in the ``comment``,
+``source`` and ``imagery_used`` fields of the changeset. Furthermore, we also
+consider if the software editor used allows to import data or to do mass edits.
+We consider ``powerfull editors``: JOSM, Merkaartor, level0, QGIS and ArcGis.
+
+In the ``Usage`` section, you can see how to customize some of these detection rules.
+
+Possible Import
+---------------
+
+We tag a changeset as a ``possible import`` if the number of created elements is
+greater than 70% of the sum of elements created, modified and deleted and if it
+creates more than 1000 elements or 200 elements case it used one of the ``powerfull editors``.
+
+Mass Modification
+-----------------
+
+We consider a changeset as a ``mass modification`` if the number of modified elements
+is greater than 70% of the sum of elements created, modified and deleted and if it
+modifies more than 200 elements.
+
+Mass Deletion
+-------------
+
+All changesets that delete more than 1000 elements are considered a ``mass deletion``.
+If the changeset deletes between 200 and 1000 elements and the number of deleted
+elements is greater than 70% of the sum of elements created, modified and deleted
+it's also tagged as a ``mass deletion``.
+
+Suspect words
+-------------
+
+The suspect words are loaded from a `yaml file <osmcha/suspect_words.yaml>`_.
+You can customize the words by setting another default file with a environment
+variable:
+
+.. code-block:: console
+  export SUSPECT_WORDS=<path_to_the_file>
+
+or pass a list of words to the ``Analyse`` class, more information on the section
+``Customizing Detection Rules``. We use a list of illegal sources to analyse the
+``source`` and ``imagery_used`` fields and another more general list to examine
+the comment field. We have also a list of excluded words to avoid false positives.
 
 Tests
 ======

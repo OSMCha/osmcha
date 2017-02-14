@@ -6,31 +6,23 @@ from datetime import datetime
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
+from osmcha.changeset import WORDS
 from osmcha.changeset import find_words
 from osmcha.changeset import InvalidChangesetError
 
 
-suspect_words = [
-    'google',
-    'nokia',
-    'waze',
-    'apple',
-    'tomtom',
-    'import',
-    'wikimapia',
-    ]
-
-excluded_words = ['important']
-
-
 def test_find_words():
     """Test the changeset.find_words function and the regular expressions."""
+    suspect_words = WORDS['sources'] + WORDS['common']
+    excluded_words = WORDS['exclude']
+
     assert find_words('import buildings', suspect_words)
     assert find_words('imported Importação unimportant', suspect_words, excluded_words)
     assert not find_words('important edit', suspect_words, excluded_words)
     assert not find_words('Where is here?', suspect_words, excluded_words)
     assert find_words('GooGle is not important', suspect_words, excluded_words)
     assert not find_words('somewhere in the world', suspect_words, excluded_words)
+    assert find_words('дані по імпорту', suspect_words, excluded_words)
 
 
 def test_changeset_list():
@@ -87,6 +79,7 @@ def test_analyse_init():
 
 
 def test_changeset_without_coords():
+    """Changeset deleted a relation, so it has not a bbox."""
     ch = Analyse(33624206)
     assert ch.bbox == 'GEOMETRYCOLLECTION EMPTY'
 
@@ -174,6 +167,7 @@ def test_analyse_verify_words():
 
 
 def test_analyse_verify_editor():
+    """Test definition of powerfull_editor variable and verify_edito method"""
     ch_dict = {
         'created_by': 'JOSM/1.5 (8339 en)',
         'created_at': '2015-04-25T18:08:46Z',
@@ -288,6 +282,7 @@ def test_analyse_count():
 
 
 def test_analyse_import():
+    """Created: 1900. Modified: 16. Deleted: 320 / JOSM"""
     ch = Analyse(10013029)
     ch.full_analysis()
     assert ch.is_suspect
@@ -295,6 +290,7 @@ def test_analyse_import():
 
 
 def test_custom_create_value():
+    """Created: 1900. Modified: 16. Deleted: 320 / JOSM"""
     ch = Analyse(10013029, create_threshold=2000)
     ch.full_analysis()
     assert ch.is_suspect is False
@@ -302,6 +298,7 @@ def test_custom_create_value():
 
 
 def test_analyse_mass_modification():
+    """Created: 322. Modified: 1115. Deleted: 140 / Potlatch 2"""
     ch = Analyse(19863853)
     ch.full_analysis()
     assert ch.is_suspect
@@ -309,6 +306,7 @@ def test_analyse_mass_modification():
 
 
 def test_custom_modify_value():
+    """Created: 322. Modified: 1115. Deleted: 140 / Potlatch 2"""
     ch = Analyse(19863853, modify_threshold=1200)
     ch.full_analysis()
     assert ch.is_suspect is False
@@ -316,6 +314,7 @@ def test_custom_modify_value():
 
 
 def test_analyse_mass_deletion():
+    """Created: 0. Modified: 0. Deleted: 1019 / Potlatch 2"""
     ch = Analyse(31450443)
     ch.full_analysis()
     assert ch.is_suspect
@@ -323,6 +322,7 @@ def test_analyse_mass_deletion():
 
 
 def test_custom_delete_value():
+    """C/M/D = 0 0 61 / iD"""
     ch = Analyse(45901540, delete_threshold=100)
     ch.full_analysis()
     assert ch.is_suspect is False
@@ -330,6 +330,7 @@ def test_custom_delete_value():
 
 
 def test_custom_percentage():
+    """C/M/D = 481 620 80 / JOSM"""
     ch = Analyse(45082154)
     ch.full_analysis()
     assert ch.is_suspect is False
@@ -342,6 +343,7 @@ def test_custom_percentage():
 
 
 def test_custom_top_threshold():
+    """C/M/D = 1072 124 282 / made with iD"""
     ch = Analyse(45862717)
     ch.full_analysis()
     assert ch.is_suspect
@@ -354,6 +356,7 @@ def test_custom_top_threshold():
 
 
 def test_no_duplicated_reason():
+    """Changeset with word import in comment and source fields."""
     ch = Analyse(45632780)
     ch.full_analysis()
     assert ch.is_suspect

@@ -1,0 +1,51 @@
+sources:
+- google
+- nokia
+- waze
+- apple
+- tomtom
+- wikimapia
+- goo.gl
+- navteq
+- teleatlas
+- yelp
+
+common:
+- pokemon
+- import
+- reimport
+- re-import
+- einführen
+- Импортировать
+- インポート
+- 進口
+- імпорт
+- fix
+- bad
+- mess
+- rubish
+- shit
+- crap
+- broken
+- haha
+- jaja
+- political
+- mischief
+- nuisance
+- nonsense
+- vandal
+- newbie
+- dirty
+- monster
+- xxx
+- sex
+- escort
+- destroy
+- harm
+- drag
+- damn
+- fuck
+
+exclude:
+- important
+- importante

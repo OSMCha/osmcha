@@ -3,15 +3,24 @@ from __future__ import division
 import gzip
 import json
 import re
+import environ
 from datetime import datetime
 from os.path import basename, join, isfile
 from shutil import rmtree
 from tempfile import mkdtemp
 import xml.etree.ElementTree as ET
 
+import yaml
+
 import requests
 from homura import download
 from shapely.geometry import Polygon
+
+
+env = environ.Env()
+
+SUSPECT_WORDS_FILE = env('SUSPECT_WORDS', default='./osmcha/suspect_words.yaml')
+WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
 
 
 class InvalidChangesetError(Exception):
@@ -149,7 +158,9 @@ class ChangesetList(object):
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
     def __init__(self, changeset, create_threshold=200, modify_threshold=200,
-            delete_threshold=30, percentage=0.7, top_threshold=1000):
+            delete_threshold=30, percentage=0.7, top_threshold=1000,
+            suspect_words=WORDS['common'] + WORDS['sources'],
+            illegal_sources=WORDS['sources'], excluded_words=WORDS['exclude']):
         if type(changeset) in [int, str]:
             changeset_details = changeset_info(get_metadata(changeset))
             self.set_fields(changeset_details)
@@ -166,6 +177,9 @@ class Analyse(object):
         self.delete_threshold = delete_threshold
         self.percentage = percentage
         self.top_threshold = top_threshold
+        self.excluded_words = excluded_words
+        self.illegal_sources = illegal_sources
+        self.suspect_words = suspect_words
 
     def set_fields(self, changeset):
         """Set the fields of this class with the metadata of the analysed
@@ -196,34 +210,21 @@ class Analyse(object):
         """Verify the fields source, imagery_used and comment of the changeset
         for some suspect words.
         """
-        suspect_words = [
-            'google',
-            'nokia',
-            'waze',
-            'apple',
-            'tomtom',
-            'import',
-            'wikimapia',
-            ]
-
-        excluded_words = [
-            'important',
-            ]
 
         if self.comment:
-            if find_words(self.comment, suspect_words, excluded_words):
+            if find_words(self.comment, self.suspect_words, self.excluded_words):
                 self.is_suspect = True
                 self.suspicion_reasons.append('suspect_word')
 
         if self.source:
-            for word in suspect_words:
+            for word in self.illegal_sources:
                 if word in self.source.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
                     break
 
         if self.imagery_used:
-            for word in suspect_words:
+            for word in self.illegal_sources:
                 if word in self.imagery_used.lower():
                     self.is_suspect = True
                     self.suspicion_reasons.append('suspect_word')
