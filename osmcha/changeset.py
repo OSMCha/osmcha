@@ -3,7 +3,7 @@ from __future__ import division
 import gzip
 import json
 import re
-import environ
+import environs
 from datetime import datetime
 from os.path import basename, join, isfile
 from shutil import rmtree
@@ -17,7 +17,7 @@ from homura import download
 from shapely.geometry import Polygon
 
 
-env = environ.Env()
+env = environs.Env()
 
 SUSPECT_WORDS_FILE = env('SUSPECT_WORDS', default='./osmcha/suspect_words.yaml')
 WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
