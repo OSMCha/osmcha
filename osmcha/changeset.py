@@ -190,6 +190,7 @@ class Analyse(object):
         self.user = changeset.get('user')
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by')
+        self.host = changeset.get('host', 'Not reported')
         self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', 'Not reported')
         self.source = changeset.get('source', 'Not reported')
@@ -241,6 +242,17 @@ class Analyse(object):
                 self.powerfull_editor = True
                 break
 
+        if 'iD' in self.editor:
+            trusted_hosts = [
+                'http://www.openstreetmap.org/id',
+                'https://www.openstreetmap.org/id',
+                'http://improveosm.org/',
+                'https://strava.github.io/iD/'
+                ]
+            if self.host not in trusted_hosts:
+                self.is_suspect = True
+                self.suspicion_reasons.append('Unknown iD instance')
+
     def count(self):
         """Count the number of elements created, modified and deleted by the
         changeset and analyses if it is a possible import, mass modification or
@@ -270,3 +282,18 @@ class Analyse(object):
                 self.suspicion_reasons.append('mass deletion')
         except ZeroDivisionError:
             print('It seems this changeset was redacted')
+
+    def get_dict(self):
+        ch_dict = self.__dict__.copy()
+        for key in self.__dict__:
+            if self.__dict__.get(key) == '':
+                ch_dict.pop(key)
+
+        fields_to_remove = [
+            'create_threshold', 'modify_threshold', 'illegal_sources',
+            'delete_threshold', 'percentage', 'top_threshold', 'suspect_words',
+            'excluded_words', 'host'
+            ]
+        for field in fields_to_remove:
+            ch_dict.pop(field)
+        return ch_dict

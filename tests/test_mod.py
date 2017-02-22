@@ -167,8 +167,8 @@ def test_analyse_verify_words():
     assert not ch.is_suspect
 
 
-def test_analyse_verify_editor():
-    """Test definition of powerfull_editor variable and verify_edito method"""
+def test_analyse_verify_editor_josm():
+    """Test if JOSM is a powerfull_editor."""
     ch_dict = {
         'created_by': 'JOSM/1.5 (8339 en)',
         'created_at': '2015-04-25T18:08:46Z',
@@ -186,6 +186,9 @@ def test_analyse_verify_editor():
     ch.verify_editor()
     assert ch.powerfull_editor
 
+
+def test_analyse_verify_editor_merkaartor():
+    """Test if Merkaartor is a powerfull_editor."""
     ch_dict = {
         'created_by': 'Merkaartor 0.18 (de)',
         'created_at': '2015-04-25T18:08:46Z',
@@ -203,6 +206,9 @@ def test_analyse_verify_editor():
     ch.verify_editor()
     assert ch.powerfull_editor
 
+
+def test_analyse_verify_editor_level0():
+    """Test if Level0 is a powerfull_editor."""
     ch_dict = {
         'created_by': 'Level0 v1.1',
         'created_at': '2015-04-25T18:08:46Z',
@@ -220,6 +226,9 @@ def test_analyse_verify_editor():
     ch.verify_editor()
     assert ch.powerfull_editor
 
+
+def test_analyse_verify_editor_qgis():
+    """Test if QGIS is a powerfull_editor."""
     ch_dict = {
         'created_by': 'QGIS plugin',
         'created_at': '2015-04-25T18:08:46Z',
@@ -237,8 +246,14 @@ def test_analyse_verify_editor():
     ch.verify_editor()
     assert ch.powerfull_editor
 
+
+def test_analyse_verify_editor_id_osm():
+    """Test if iD is not a powerfull_editor and if https://www.openstreetmap.org/id
+    is a trusted instance.
+    """
     ch_dict = {
         'created_by': 'iD 1.7.3',
+        'host': 'https://www.openstreetmap.org/id',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
@@ -253,7 +268,84 @@ def test_analyse_verify_editor():
     ch = Analyse(ch_dict)
     ch.verify_editor()
     assert ch.powerfull_editor is False
+    assert ch.suspicion_reasons == []
 
+
+def test_analyse_verify_editor_id_improveosm():
+    """Test if iD is not a powerfull_editor and if http://improveosm.org
+    is a trusted instance.
+    """
+    ch_dict = {
+        'created_by': 'iD 1.7.3',
+        'host': 'http://improveosm.org/',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert ch.suspicion_reasons == []
+
+
+def test_analyse_verify_editor_id_improveosm():
+    """Test if iD is not a powerfull_editor and if https://strava.github.io/iD/
+    is a trusted instance.
+    """
+    ch_dict = {
+        'created_by': 'iD 1.7.3',
+        'host': 'https://strava.github.io/iD/',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert ch.suspicion_reasons == []
+
+
+def test_analyse_verify_editor_id_unknown_instance():
+    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
+    to suspicion_reasons.
+    """
+    ch_dict = {
+        'created_by': 'iD 1.7.3',
+        'host': 'http://anotherhost.com',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert 'Unknown iD instance' in ch.suspicion_reasons
+    assert ch.is_suspect
+
+
+def test_analyse_verify_editor_Potlatch2():
+    """Test if Potlatch 2 is not a powerfull_editor."""
     ch_dict = {
         'created_by': 'Potlatch 2',
         'created_at': '2015-04-25T18:08:46Z',
@@ -371,3 +463,48 @@ def test_redacted_changeset():
     ch = Analyse(34495147)
     ch.full_analysis()
     assert ch.is_suspect is False
+
+
+def test_get_dict():
+    """Test if get_dict function return only the fields that osmcha-django needs
+    to save in the database.
+    """
+    # An iD changeset
+    ch = Analyse(46286980)
+    ch.full_analysis()
+    assert 'id' in ch.get_dict().keys()
+    assert 'user' in ch.get_dict().keys()
+    assert 'uid' in ch.get_dict().keys()
+    assert 'editor' in ch.get_dict().keys()
+    assert 'bbox' in ch.get_dict().keys()
+    assert 'date' in ch.get_dict().keys()
+    assert 'comment' in ch.get_dict().keys()
+    assert 'source' in ch.get_dict().keys()
+    assert 'imagery_used' in ch.get_dict().keys()
+    assert 'is_suspect' in ch.get_dict().keys()
+    assert 'powerfull_editor' in ch.get_dict().keys()
+    assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'create' in ch.get_dict().keys()
+    assert 'modify' in ch.get_dict().keys()
+    assert 'delete' in ch.get_dict().keys()
+    assert len(ch.get_dict().keys()) == 15
+
+    # A JOSM changeset
+    ch = Analyse(46315321)
+    ch.full_analysis()
+    assert 'id' in ch.get_dict().keys()
+    assert 'user' in ch.get_dict().keys()
+    assert 'uid' in ch.get_dict().keys()
+    assert 'editor' in ch.get_dict().keys()
+    assert 'bbox' in ch.get_dict().keys()
+    assert 'date' in ch.get_dict().keys()
+    assert 'comment' in ch.get_dict().keys()
+    assert 'source' in ch.get_dict().keys()
+    assert 'imagery_used' in ch.get_dict().keys()
+    assert 'is_suspect' in ch.get_dict().keys()
+    assert 'powerfull_editor' in ch.get_dict().keys()
+    assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'create' in ch.get_dict().keys()
+    assert 'modify' in ch.get_dict().keys()
+    assert 'delete' in ch.get_dict().keys()
+    assert len(ch.get_dict().keys()) == 15
