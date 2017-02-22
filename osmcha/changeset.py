@@ -17,10 +17,17 @@ from homura import download
 from shapely.geometry import Polygon
 
 
-SUSPECT_WORDS_FILE = environ.get(
-    'SUSPECT_WORDS',
-    default=join(dirname(abspath(__file__)), 'suspect_words.yaml')
-    )
+# Python 2 has 'failobj' instead of 'default'
+try:
+    SUSPECT_WORDS_FILE = environ.get(
+        'SUSPECT_WORDS',
+        default=join(dirname(abspath(__file__)), 'suspect_words.yaml')
+        )
+except TypeError:
+    SUSPECT_WORDS_FILE = environ.get(
+        'SUSPECT_WORDS',
+        failobj=join(dirname(abspath(__file__)), 'suspect_words.yaml')
+        )
 WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
 
 
