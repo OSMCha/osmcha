@@ -34,8 +34,7 @@ setup(name='osmcha',
           'homura',
           'shapely',
           'python-dateutil',
-          'PyYAML',
-          'environs',
+          'PyYAML'
       ],
       extras_require={
           'test': ['pytest'],

@@ -3,9 +3,9 @@ from __future__ import division, unicode_literals
 import gzip
 import json
 import re
-import environs
+from os import environ
 from datetime import datetime
-from os.path import basename, join, isfile
+from os.path import basename, join, isfile, dirname, abspath
 from shutil import rmtree
 from tempfile import mkdtemp
 import xml.etree.ElementTree as ET
@@ -17,9 +17,10 @@ from homura import download
 from shapely.geometry import Polygon
 
 
-env = environs.Env()
-
-SUSPECT_WORDS_FILE = env('SUSPECT_WORDS', default='./osmcha/suspect_words.yaml')
+SUSPECT_WORDS_FILE = environ.get(
+    'SUSPECT_WORDS',
+    default=join(dirname(abspath(__file__)), 'suspect_words.yaml')
+    )
 WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
 
 
