@@ -196,7 +196,7 @@ class Analyse(object):
         self.id = int(changeset.get('id'))
         self.user = changeset.get('user')
         self.uid = changeset.get('uid')
-        self.editor = changeset.get('created_by')
+        self.editor = changeset.get('created_by', None)
         self.host = changeset.get('host', 'Not reported')
         self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', 'Not reported')
@@ -244,21 +244,26 @@ class Analyse(object):
     def verify_editor(self):
         """Verify if the software used in the changeset is a powerfull_editor.
         """
-        for editor in ['josm', 'level0', 'merkaartor', 'qgis', 'arcgis']:
-            if editor in self.editor.lower():
-                self.powerfull_editor = True
-                break
+        if self.editor is not None:
+            for editor in ['josm', 'level0', 'merkaartor', 'qgis', 'arcgis']:
+                if editor in self.editor.lower():
+                    self.powerfull_editor = True
+                    break
 
-        if 'iD' in self.editor:
-            trusted_hosts = [
-                'http://www.openstreetmap.org/id',
-                'https://www.openstreetmap.org/id',
-                'http://improveosm.org/',
-                'https://strava.github.io/iD/'
-                ]
-            if self.host not in trusted_hosts:
-                self.is_suspect = True
-                self.suspicion_reasons.append('Unknown iD instance')
+            if 'iD' in self.editor:
+                trusted_hosts = [
+                    'http://www.openstreetmap.org/id',
+                    'https://www.openstreetmap.org/id',
+                    'http://improveosm.org/',
+                    'https://strava.github.io/iD/'
+                    ]
+                if self.host not in trusted_hosts:
+                    self.is_suspect = True
+                    self.suspicion_reasons.append('Unknown iD instance')
+        else:
+            self.is_suspect = True
+            self.powerfull_editor = True
+            self.suspicion_reasons.append('Software editor was not declared')
 
     def count(self):
         """Count the number of elements created, modified and deleted by the

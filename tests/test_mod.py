@@ -508,3 +508,11 @@ def test_get_dict():
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
     assert len(ch.get_dict().keys()) == 15
+
+
+def test_changeset_without_tags():
+    ch = Analyse(46755934)
+    ch.full_analysis()
+    assert ch.powerfull_editor
+    assert ch.is_suspect
+    assert 'Software editor was not declared' in ch.suspicion_reasons
