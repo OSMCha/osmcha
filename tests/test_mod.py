@@ -382,12 +382,14 @@ def test_analyse_import():
     assert 'possible import' in ch.suspicion_reasons
 
 
-def test_custom_create_value():
+def test_new_user_custom_create_value():
     """Created: 1900. Modified: 16. Deleted: 320 / JOSM"""
     ch = Analyse(10013029, create_threshold=2000)
     ch.full_analysis()
-    assert ch.is_suspect is False
-    assert len(ch.suspicion_reasons) == 0
+    assert ch.is_suspect is True
+    assert 'possible import' not in ch.suspicion_reasons
+    assert 'New mapper' in ch.suspicion_reasons
+    assert len(ch.suspicion_reasons) == 1
 
 
 def test_analyse_mass_modification():
@@ -517,17 +519,20 @@ def test_changeset_without_tags():
     assert ch.is_suspect
     assert 'Software editor was not declared' in ch.suspicion_reasons
 
+
 def test_changeset_by_new_mapper():
     changeset = Analyse(46756461)
     changeset.full_analysis()
     assert 'New mapper' in changeset.suspicion_reasons
     assert changeset.is_suspect
 
+
 def test_changeset_by_old_mapper_with_unicode_username():
     changeset = Analyse(46790192)
     changeset.full_analysis()
     assert 'New mapper' not in changeset.suspicion_reasons
     assert not changeset.is_suspect
+
 
 def test_changeset_by_old_mapper_with_special_character_username():
     changeset = Analyse(46141825)

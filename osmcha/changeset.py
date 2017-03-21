@@ -4,7 +4,6 @@ import gzip
 import json
 import re
 from os import environ
-import urllib
 from datetime import datetime
 from os.path import basename, join, isfile, dirname, abspath
 from shutil import rmtree
@@ -30,7 +29,11 @@ except TypeError:
         failobj=join(dirname(abspath(__file__)), 'suspect_words.yaml')
         )
 WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
-OSM_USERS_API = environ.get('OSM_USERS_API', 'https://osm-comments-api.mapbox.com/api/v1/users/name/{username}')
+OSM_USERS_API = environ.get(
+    'OSM_USERS_API',
+    'https://osm-comments-api.mapbox.com/api/v1/users/name/{username}'
+    )
+
 
 class InvalidChangesetError(Exception):
     pass
@@ -222,11 +225,15 @@ class Analyse(object):
 
         try:
             # Convert username to ASCII and quote any special characters.
-            url = OSM_USERS_API.format(username=urllib.quote(self.user))
+            url = OSM_USERS_API.format(
+                username=requests.compat.quote(self.user)
+                )
             print(url)
             user_details = json.loads(requests.get(url).content)
         except Exception as e:
-            print('changeset_by_new_mapper failed for: {}, {}'.format(self.id, str(e)))
+            print(
+                'changeset_by_new_mapper failed for: {}, {}'.format(self.id, str(e))
+                )
         else:
             if user_details['changeset_count'] <= 5:
                 self.suspicion_reasons.append(reason)
