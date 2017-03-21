@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[0.3.3] - 2017-03-21
+--------------------
+
+- Mark changesets made by users that has less than 5 changesets as suspicious
+
 [0.3.2] - 2017-03-17
 --------------------
 
