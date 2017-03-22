@@ -228,8 +228,8 @@ class Analyse(object):
             url = OSM_USERS_API.format(
                 username=requests.compat.quote(self.user)
                 )
-            print(url)
-            user_details = json.loads(requests.get(url).content)
+            # .decode is necessary to avoid failing in python 3.4 and 3.5
+            user_details = json.loads(requests.get(url).content.decode('utf-8'))
         except Exception as e:
             print(
                 'changeset_by_new_mapper failed for: {}, {}'.format(self.id, str(e))
