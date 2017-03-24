@@ -145,6 +145,13 @@ Changelog
 
 Check `CHANGELOG <CHANGELOG.rst>`_ for the version history.
 
+Contributors
+============
+
+* Wille Marcel
+* Sanjay Banghar
+* Bhargav Kowshik
+
 License
 =======
 

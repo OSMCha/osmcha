@@ -221,9 +221,11 @@ class Analyse(object):
         self.changeset_by_new_mapper()
 
     def changeset_by_new_mapper(self):
-
-        # Add suspecious reason and set the suspecious flag.
-        def label_suspecious(self):
+        """Verify if the changeset was made by a inexperienced mapper (anyone
+        with less than 5 edits).
+        """
+        def label_suspicious(self):
+            """Add suspicion reason and set the suspicious flag."""
             reason = 'New mapper'
             self.suspicion_reasons.append(reason)
             self.is_suspect = True
@@ -236,22 +238,24 @@ class Analyse(object):
                 )
             r = requests.get(url)
             if r.status_code == 404:
-                label_suspecious(self)
+                label_suspicious(self)
             else:
                 # .decode is necessary to avoid failing in python 3.4 and 3.5
-                user_details = json.loads(requests.get(url).content.decode('utf-8'))
+                user_details = json.loads(
+                    requests.get(url).content.decode('utf-8')
+                    )
                 if user_details['changeset_count'] <= 5:
-                    label_suspecious(self)
+                    label_suspicious(self)
 
         except Exception as e:
             print(
                 'changeset_by_new_mapper failed for: {}, {}'.format(self.id, str(e))
                 )
+
     def verify_words(self):
         """Verify the fields source, imagery_used and comment of the changeset
         for some suspect words.
         """
-
         if self.comment:
             if find_words(self.comment, self.suspect_words, self.excluded_words):
                 self.is_suspect = True

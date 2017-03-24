@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[0.3.5] - 2017-03-24
+--------------------
+
+- Set the changeset as a new mapper edit if the request to the users API fails
+- Improvements on documentation
+
 [0.3.4] - 2017-03-22
 --------------------
 
