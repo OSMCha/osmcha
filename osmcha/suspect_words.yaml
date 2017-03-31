@@ -46,6 +46,7 @@ common:
 - damn
 - fuck
 - geofiction
+- test
 
 exclude:
 - important
