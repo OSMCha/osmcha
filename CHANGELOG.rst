@@ -1,10 +1,15 @@
 Change Log
 ==========
 
+[0.3.7] - 2017-04-18
+--------------------
+
+- Remove area field and calculate the area in django when saving a changeset.
+
 [0.3.6] - 2017-04-18
 --------------------
 
-- Add area field to changeset Analyse class. Make sure you update osmcha-django code before start using this version
+- Add area field to changeset Analyse class.
 - Flag changes with "test" in comment
 
 [0.3.5] - 2017-03-24

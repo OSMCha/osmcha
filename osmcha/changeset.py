@@ -203,7 +203,6 @@ class Analyse(object):
         self.editor = changeset.get('created_by', None)
         self.host = changeset.get('host', 'Not reported')
         self.bbox = changeset.get('bbox').wkt
-        self.area = changeset.get('bbox').area
         self.comment = changeset.get('comment', 'Not reported')
         self.source = changeset.get('source', 'Not reported')
         self.imagery_used = changeset.get('imagery_used', 'Not reported')
