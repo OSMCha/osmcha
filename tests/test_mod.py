@@ -78,6 +78,7 @@ def test_analyse_init():
     assert ch.user == 'JustTest'
     assert ch.uid == '123123'
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
+    assert ch.area == 0.00035454780569997915
 
 
 def test_changeset_without_coords():
@@ -480,6 +481,7 @@ def test_get_dict():
     assert 'uid' in ch.get_dict().keys()
     assert 'editor' in ch.get_dict().keys()
     assert 'bbox' in ch.get_dict().keys()
+    assert 'area' in ch.get_dict().keys()
     assert 'date' in ch.get_dict().keys()
     assert 'comment' in ch.get_dict().keys()
     assert 'source' in ch.get_dict().keys()
@@ -490,7 +492,7 @@ def test_get_dict():
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert len(ch.get_dict().keys()) == 16
 
     # A JOSM changeset
     ch = Analyse(46315321)
@@ -500,6 +502,7 @@ def test_get_dict():
     assert 'uid' in ch.get_dict().keys()
     assert 'editor' in ch.get_dict().keys()
     assert 'bbox' in ch.get_dict().keys()
+    assert 'area' in ch.get_dict().keys()
     assert 'date' in ch.get_dict().keys()
     assert 'comment' in ch.get_dict().keys()
     assert 'source' in ch.get_dict().keys()
@@ -510,7 +513,7 @@ def test_get_dict():
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert len(ch.get_dict().keys()) == 16
 
 
 def test_changeset_without_tags():
