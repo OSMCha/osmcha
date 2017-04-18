@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[0.3.6] - 2017-04-18
+--------------------
+
+- Add area field to changeset Analyse class. Make sure you update osmcha-django code before start using this version
+- Flag changes with "test" in comment
+
 [0.3.5] - 2017-03-24
 --------------------
 
