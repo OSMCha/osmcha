@@ -290,7 +290,10 @@ class Analyse(object):
                 trusted_hosts = [
                     'http://www.openstreetmap.org/id',
                     'https://www.openstreetmap.org/id',
+                    'http://www.openstreetmap.org/edit',
+                    'https://www.openstreetmap.org/edit',
                     'http://improveosm.org/',
+                    'https://improveosm.org/',
                     'https://strava.github.io/iD/'
                     ]
                 if self.host not in trusted_hosts:

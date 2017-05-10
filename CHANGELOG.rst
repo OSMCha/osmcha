@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[0.3.8] - 2017-05-10
+--------------------
+
+- Add https://www.openstreetmap.org/edit as a trusted host.
+
+
 [0.3.7] - 2017-04-18
 --------------------
 

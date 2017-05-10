@@ -249,12 +249,12 @@ def test_analyse_verify_editor_qgis():
 
 
 def test_analyse_verify_editor_id_osm():
-    """Test if iD is not a powerfull_editor and if https://www.openstreetmap.org/id
+    """Test if iD is not a powerfull_editor and if https://www.openstreetmap.org/edit
     is a trusted instance.
     """
     ch_dict = {
         'created_by': 'iD 1.7.3',
-        'host': 'https://www.openstreetmap.org/id',
+        'host': 'https://www.openstreetmap.org/edit',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
