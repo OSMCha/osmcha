@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[0.3.9] - 2017-07-14
+--------------------
+
+- Add http://strava.github.io/iD/ as a trusted host.
+- Remove 'fix' from suspect_words list
+
 [0.3.8] - 2017-05-10
 --------------------
 
