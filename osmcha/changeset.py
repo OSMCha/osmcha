@@ -294,6 +294,7 @@ class Analyse(object):
                     'https://www.openstreetmap.org/edit',
                     'http://improveosm.org/',
                     'https://improveosm.org/',
+                    'http://strava.github.io/iD/',
                     'https://strava.github.io/iD/'
                     ]
                 if self.host not in trusted_hosts:
