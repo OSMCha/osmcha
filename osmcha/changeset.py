@@ -250,21 +250,18 @@ class Analyse(object):
         """
         if self.comment:
             if find_words(self.comment, self.suspect_words, self.excluded_words):
-                self.is_suspect = True
-                self.suspicion_reasons.append('suspect_word')
+                self.label_suspicious('suspect_word')
 
         if self.source:
             for word in self.illegal_sources:
                 if word in self.source.lower():
-                    self.is_suspect = True
-                    self.suspicion_reasons.append('suspect_word')
+                    self.label_suspicious('suspect_word')
                     break
 
         if self.imagery_used:
             for word in self.illegal_sources:
                 if word in self.imagery_used.lower():
-                    self.is_suspect = True
-                    self.suspicion_reasons.append('suspect_word')
+                    self.label_suspicious('suspect_word')
                     break
 
         self.suspicion_reasons = list(set(self.suspicion_reasons))
@@ -294,12 +291,10 @@ class Analyse(object):
                     'https://strava.github.io/iD/'
                     ]
                 if self.host not in trusted_hosts:
-                    self.is_suspect = True
-                    self.suspicion_reasons.append('Unknown iD instance')
+                    self.label_suspicious('Unknown iD instance')
         else:
-            self.is_suspect = True
             self.powerfull_editor = True
-            self.suspicion_reasons.append('Software editor was not declared')
+            self.label_suspicious('Software editor was not declared')
 
     def count(self):
         """Count the number of elements created, modified and deleted by the
@@ -317,17 +312,14 @@ class Analyse(object):
             if (self.create / len(actions) > self.percentage and
                     self.create > self.create_threshold and
                     (self.powerfull_editor or self.create > self.top_threshold)):
-                self.is_suspect = True
-                self.suspicion_reasons.append('possible import')
+                self.label_suspicious('possible import')
             elif (self.modify / len(actions) > self.percentage and
                     self.modify > self.modify_threshold):
-                self.is_suspect = True
-                self.suspicion_reasons.append('mass modification')
+                self.label_suspicious('mass modification')
             elif ((self.delete / len(actions) > self.percentage and
                     self.delete > self.delete_threshold) or
                     self.delete > self.top_threshold):
-                self.is_suspect = True
-                self.suspicion_reasons.append('mass deletion')
+                self.label_suspicious('mass deletion')
         except ZeroDivisionError:
             print('It seems this changeset was redacted')
 
