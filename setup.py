@@ -37,7 +37,7 @@ setup(name='osmcha',
           'PyYAML'
       ],
       extras_require={
-          'test': ['pytest', 'responses'],
+          'test': ['pytest'],
       },
       entry_points="""
       [console_scripts]

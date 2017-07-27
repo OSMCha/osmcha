@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from datetime import datetime
+
 from pytest import raises
 from shapely.geometry import Polygon
-
-from datetime import datetime
-import responses
 
 from osmcha.changeset import ChangesetList
 from osmcha.changeset import Analyse
@@ -78,6 +77,28 @@ def test_analyse_init():
     assert ch.user == 'JustTest'
     assert ch.uid == '123123'
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
+
+
+def test_analyse_label_suspicious():
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
+        'build': '2.3-650-gad99430',
+        'version': '2.3',
+        'comment': 'Put data from Google',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.label_suspicious('some reason')
+    assert 'some reason' in ch.suspicion_reasons
+    assert ch.is_suspect
 
 
 def test_changeset_without_coords():
@@ -296,7 +317,7 @@ def test_analyse_verify_editor_id_improveosm():
     assert ch.suspicion_reasons == []
 
 
-def test_analyse_verify_editor_id_improveosm():
+def test_analyse_verify_editor_id_strava():
     """Test if iD is not a powerfull_editor and if https://strava.github.io/iD/
     is a trusted instance.
     """
@@ -521,6 +542,13 @@ def test_changeset_without_tags():
     assert 'Software editor was not declared' in ch.suspicion_reasons
 
 
+def test_changeset_by_user_with_more_than_one_block():
+    changeset = Analyse(34879408)
+    changeset.full_analysis()
+    assert 'User has been blocked more than once' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
 def test_changeset_by_new_mapper():
     changeset = Analyse(46756461)
     changeset.full_analysis()
@@ -540,35 +568,3 @@ def test_changeset_by_old_mapper_with_special_character_username():
     changeset.full_analysis()
     assert 'New mapper' not in changeset.suspicion_reasons
     assert not changeset.is_suspect
-
-
-@responses.activate
-def test_changeset_by_mapper_who_does_not_exist():
-    changeset_meta_data = '''<osm version="0.6" generator="CGImap 0.5.8 (15904 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/"><changeset id="44469157" created_at="2016-12-17T12:37:41Z" closed_at="2016-12-17T12:37:43Z" open="false" user="bkowshik" uid="1087876" min_lat="12.9316906" min_lon="77.5555034" max_lat="12.9316906" max_lon="77.5555034" comments_count="0"><tag k="comment" v="Added a hotel"/><tag k="locale" v="en-US"/><tag k="host" v="http://www.openstreetmap.org/id"/><tag k="imagery_used" v="Bing aerial imagery"/><tag k="created_by" v="iD 2.0.1"/></changeset></osm>'''
-    changeset_data = '''<osmChange version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/"><create><node id="4558466455" changeset="44469157" timestamp="2016-12-17T12:37:43Z" version="1" visible="true" user="bkowshik" uid="1087876" lat="12.9316906" lon="77.5555034"><tag k="fast_food" v="regional"/><tag k="food" v="veg"/><tag k="name" v="Sankethi's"/><tag k="operator" v="Sankethi Ventures"/><tag k="smoking" v="no"/><tag k="tourism" v="hotel"/></node></create></osmChange>'''
-
-    # Mock changeset meta data request.
-    responses.add(
-        responses.GET,
-        'http://www.openstreetmap.org/api/0.6/changeset/44469157',
-        body=changeset_meta_data,
-        status=200
-    )
-    # Mock changeset data request.
-    responses.add(
-        responses.GET,
-        'http://www.openstreetmap.org/api/0.6/changeset/44469157/download',
-        body=changeset_data,
-        status=200
-    )
-    # Mock download user details request.
-    responses.add(
-        responses.GET,
-        'https://osm-comments-api.mapbox.com/api/v1/users/name/bkowshik',
-        json={"error": "not found"},
-        status=404  # To denote that the user does not exist.
-        )
-    changeset = Analyse(44469157)
-    changeset.full_analysis()
-    assert 'New mapper' in changeset.suspicion_reasons
-    assert changeset.is_suspect

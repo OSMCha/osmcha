@@ -11,7 +11,6 @@ from tempfile import mkdtemp
 import xml.etree.ElementTree as ET
 
 import yaml
-
 import requests
 from homura import download
 from shapely.geometry import Polygon
@@ -31,7 +30,7 @@ except TypeError:
 WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
 OSM_USERS_API = environ.get(
     'OSM_USERS_API',
-    'https://osm-comments-api.mapbox.com/api/v1/users/name/{username}'
+    'https://www.openstreetmap.org/api/0.6/user/{user_id}'
     )
 
 
@@ -214,43 +213,36 @@ class Analyse(object):
         self.is_suspect = False
         self.powerfull_editor = False
 
+    def label_suspicious(self, reason):
+        """Add suspicion reason and set the suspicious flag."""
+        self.suspicion_reasons.append(reason)
+        self.is_suspect = True
+
     def full_analysis(self):
         """Execute the count and verify_words methods."""
         self.count()
         self.verify_words()
-        self.changeset_by_new_mapper()
+        self.verify_user()
 
-    def changeset_by_new_mapper(self):
+    def verify_user(self):
         """Verify if the changeset was made by a inexperienced mapper (anyone
-        with less than 5 edits).
+        with less than 5 edits) or by a user that was blocked more than once.
         """
-        def label_suspicious(self):
-            """Add suspicion reason and set the suspicious flag."""
-            reason = 'New mapper'
-            self.suspicion_reasons.append(reason)
-            self.is_suspect = True
-            return self
-
         try:
-            # Convert username to ASCII and quote any special characters.
-            url = OSM_USERS_API.format(
-                username=requests.compat.quote(self.user)
-                )
-            r = requests.get(url)
-            if r.status_code == 404:
-                label_suspicious(self)
-            else:
-                # .decode is necessary to avoid failing in python 3.4 and 3.5
-                user_details = json.loads(
-                    requests.get(url).content.decode('utf-8')
-                    )
-                if user_details['changeset_count'] <= 5:
-                    label_suspicious(self)
-
+            url = OSM_USERS_API.format(user_id=requests.compat.quote(self.uid))
+            user_request = requests.get(url)
+            if user_request.status_code == 200:
+                user_data = user_request.content
+                xml_data = ET.fromstring(user_data).getchildren()[0].getchildren()
+                changesets = [i for i in xml_data if i.tag == 'changesets'][0]
+                blocks = [i for i in xml_data if i.tag == 'blocks'][0]
+                if int(changesets.get('count')) <= 5:
+                    self.label_suspicious('New mapper')
+                if int(blocks.getchildren()[0].get('count')) > 1:
+                    self.label_suspicious('User has been blocked more than once')
         except Exception as e:
-            print(
-                'changeset_by_new_mapper failed for: {}, {}'.format(self.id, str(e))
-                )
+            message = 'Could not verify user of the changeset: {}, {}'
+            print(message.format(self.id, str(e)))
 
     def verify_words(self):
         """Verify the fields source, imagery_used and comment of the changeset
