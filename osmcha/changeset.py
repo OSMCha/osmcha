@@ -272,8 +272,12 @@ class Analyse(object):
     def verify_editor(self):
         """Verify if the software used in the changeset is a powerfull_editor.
         """
+        powerful_editors = [
+            'josm', 'level0', 'merkaartor', 'qgis', 'arcgis', 'upload.py',
+            'osmapi', 'Services_OpenStreetMap'
+            ]
         if self.editor is not None:
-            for editor in ['josm', 'level0', 'merkaartor', 'qgis', 'arcgis']:
+            for editor in powerful_editors:
                 if editor in self.editor.lower():
                     self.powerfull_editor = True
                     break
