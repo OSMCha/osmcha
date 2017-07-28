@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[0.4.0] - 2017-07-28
+
+- Flag changesets whose user has been blocked more than once
+- add 'upload.py', 'osmapi' and 'Services_OpenStreetMap' to the list of powerful editors
+- uses label_suspicious method to flag a changeset as suspicious
+
 [0.3.9] - 2017-07-14
 --------------------
 
@@ -11,7 +17,6 @@ Change Log
 --------------------
 
 - Add https://www.openstreetmap.org/edit as a trusted host.
-
 
 [0.3.7] - 2017-04-18
 --------------------
