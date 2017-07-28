@@ -239,7 +239,7 @@ class Analyse(object):
                 if int(changesets.get('count')) <= 5:
                     self.label_suspicious('New mapper')
                 if int(blocks.getchildren()[0].get('count')) > 1:
-                    self.label_suspicious('User has been blocked more than once')
+                    self.label_suspicious('User has multiple blocks')
         except Exception as e:
             message = 'Could not verify user of the changeset: {}, {}'
             print(message.format(self.id, str(e)))

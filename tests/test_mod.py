@@ -545,7 +545,7 @@ def test_changeset_without_tags():
 def test_changeset_by_user_with_more_than_one_block():
     changeset = Analyse(34879408)
     changeset.full_analysis()
-    assert 'User has been blocked more than once' in changeset.suspicion_reasons
+    assert 'User has multiple blocks' in changeset.suspicion_reasons
     assert changeset.is_suspect
 
 
