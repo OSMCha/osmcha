@@ -291,7 +291,9 @@ class Analyse(object):
                     'http://improveosm.org/',
                     'https://improveosm.org/',
                     'http://strava.github.io/iD/',
-                    'https://strava.github.io/iD/'
+                    'https://strava.github.io/iD/',
+                    'http://preview.ideditor.com/release',
+                    'http://preview.ideditor.com/master'
                     ]
                 if self.host not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')

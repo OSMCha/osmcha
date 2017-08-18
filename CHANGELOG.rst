@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[0.4.1] - 2017-08-17
+
+- Flag changesets with the tag 'review_requested=yes'
+- Add preview.ideditor.com to trusted hosts
+
 [0.4.0] - 2017-07-28
 
 - Flag changesets whose user has been blocked more than once
