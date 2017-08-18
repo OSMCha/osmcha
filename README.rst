@@ -124,8 +124,8 @@ Unknown iD instance
 -------------------
 
 Verify the changesets made in iD editor to check the host instance. The trusted
-iD instances are: `OSM.org <http://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_
-and `ImproveOSM <http://improveosm.org>`_.
+iD instances are: `OSM.org <http://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_,
+`ImproveOSM <http://improveosm.org>`_ and `iDeditor <http://preview.ideditor.com/master/>`_.
 
 
 Tests
