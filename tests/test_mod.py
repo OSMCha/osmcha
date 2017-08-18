@@ -568,3 +568,24 @@ def test_changeset_by_old_mapper_with_special_character_username():
     changeset.full_analysis()
     assert 'New mapper' not in changeset.suspicion_reasons
     assert not changeset.is_suspect
+
+
+def test_changeset_with_review_requested():
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'review_requested': 'yes',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert 'Review requested' in changeset.suspicion_reasons
+    assert changeset.is_suspect

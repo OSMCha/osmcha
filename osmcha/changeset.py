@@ -173,8 +173,7 @@ class Analyse(object):
             suspect_words=WORDS['common'] + WORDS['sources'],
             illegal_sources=WORDS['sources'], excluded_words=WORDS['exclude']):
         if type(changeset) in [int, str]:
-            changeset_details = changeset_info(get_metadata(changeset))
-            self.set_fields(changeset_details)
+            self.set_fields(changeset_info(get_metadata(changeset)))
         elif type(changeset) == dict:
             self.set_fields(changeset)
         else:
@@ -200,6 +199,7 @@ class Analyse(object):
         self.user = changeset.get('user')
         self.uid = changeset.get('uid')
         self.editor = changeset.get('created_by', None)
+        self.review_requested = changeset.get('review_requested', False)
         self.host = changeset.get('host', 'Not reported')
         self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', 'Not reported')
@@ -223,6 +223,9 @@ class Analyse(object):
         self.count()
         self.verify_words()
         self.verify_user()
+
+        if self.review_requested == 'yes':
+            self.label_suspicious('Review requested')
 
     def verify_user(self):
         """Verify if the changeset was made by a inexperienced mapper (anyone
@@ -332,7 +335,7 @@ class Analyse(object):
         fields_to_remove = [
             'create_threshold', 'modify_threshold', 'illegal_sources',
             'delete_threshold', 'percentage', 'top_threshold', 'suspect_words',
-            'excluded_words', 'host'
+            'excluded_words', 'host', 'review_requested',
             ]
         for field in fields_to_remove:
             ch_dict.pop(field)
