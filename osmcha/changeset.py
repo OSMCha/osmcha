@@ -41,6 +41,9 @@ class InvalidChangesetError(Exception):
 def changeset_info(changeset):
     """Return a dictionary with id, user, user_id, bounds, date of creation
     and all the tags of the changeset.
+
+    Args:
+        changeset: the XML string of the changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
     keys += ['id', 'user', 'uid', 'bbox', 'created_at']
@@ -56,6 +59,9 @@ def changeset_info(changeset):
 def get_changeset(changeset):
     """Get the changeset using the OSM API and return the content as a XML
     ElementTree.
+
+    Args:
+        changeset: the id of the changeset.
     """
     url = 'http://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
         changeset
@@ -66,6 +72,9 @@ def get_changeset(changeset):
 def get_metadata(changeset):
     """Get the metadata of a changeset using the OSM API and return it as a XML
     ElementTree.
+
+    Args:
+        changeset: the id of the changeset.
     """
     url = 'http://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
     return ET.fromstring(requests.get(url).content).getchildren()[0]
@@ -74,7 +83,11 @@ def get_metadata(changeset):
 def get_bounds(changeset):
     """Get the bounds of the changeset and return it as a Polygon object. If
     the changeset has not coordinates (case of the changesets that deal only
-    with relations), it returns an empty Polygon."""
+    with relations), it returns an empty Polygon.
+
+    Args:
+        changeset: the XML string of the changeset.
+    """
     try:
         return Polygon([
             (float(changeset.get('min_lon')), float(changeset.get('min_lat'))),
@@ -88,8 +101,11 @@ def get_bounds(changeset):
 
 
 def make_regex(words):
-    """Concatenate a list of words in a regular expression that detects any
-    word that starts with some of the words in a text.
+    """Concatenate a list of words in a regular expression. The regex is made to
+    check if a text has words that starts with any word in the list.
+
+    Args:
+        words: a list or tuple of strings,
     """
     return r'|'.join(
         ["^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
@@ -98,10 +114,18 @@ def make_regex(words):
 
 def find_words(text, suspect_words, excluded_words=[]):
     """Check if a text has some of the suspect words (or words that starts with
-    one of the suspect words). You can set words to be excluded of the search,
-    so you can remove false positives like 'important' be detected when you
-    search by 'import'. Return True if the number of suspect words found is
-    greater than the number of excluded words.
+    one of the suspect words). You can set some words to be excluded of the
+    search, so you can remove false positives like 'important' be detected when
+    you search by 'import'. It will return True if the number of suspect words
+    found is greater than the number of excluded words. Otherwise, it will
+    return False.
+
+    Args:
+        text (str): a string with the text to be analysed. It will be converted
+            to lowercase.
+        suspect_words: a list of strings that you want to check the presence in
+            the text.
+        excluded_words: a list of strings to be whitelisted.
     """
     text = text.lower()
     suspect_found = [i for i in re.finditer(make_regex(suspect_words), text)]
@@ -125,6 +149,18 @@ class ChangesetList(object):
     """
 
     def __init__(self, changeset_file, geojson=None):
+        """Read the changeset replication file, filter it you define a polygon
+        with your area of interest in a geojson file and define the .changesets
+        with the data of all changesets included in the replication file.
+
+        Args:
+            changeset_file (str): it can be the URL of a replication file in
+                https://planet.openstreetmap.org/replication/changesets/ or the
+                path to a local replication file.
+            geojson (str): path to a local geojson file containing a polygon.
+                The area of the polygon will be used to filter the changesets,
+                returning only the ones that intersect with it.
+        """
         self.read_file(changeset_file)
         if geojson:
             self.get_area(geojson)
