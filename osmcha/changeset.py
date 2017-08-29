@@ -320,18 +320,16 @@ class Analyse(object):
 
             if 'iD' in self.editor:
                 trusted_hosts = [
-                    'http://www.openstreetmap.org/id',
-                    'https://www.openstreetmap.org/id',
-                    'http://www.openstreetmap.org/edit',
-                    'https://www.openstreetmap.org/edit',
-                    'http://improveosm.org/',
-                    'https://improveosm.org/',
-                    'http://strava.github.io/iD/',
-                    'https://strava.github.io/iD/',
-                    'http://preview.ideditor.com/release',
-                    'http://preview.ideditor.com/master'
+                    'www.openstreetmap.org/id',
+                    'www.openstreetmap.org/edit',
+                    'improveosm.org/',
+                    'strava.github.io/iD/',
+                    'preview.ideditor.com/release',
+                    'preview.ideditor.com/master',
+                    'hey.mapbox.com/iD-internal/',
+                    'projets.pavie.info/id-indoor/'
                     ]
-                if self.host not in trusted_hosts:
+                if self.host.split('://')[-1] not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')
         else:
             self.powerfull_editor = True

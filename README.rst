@@ -123,9 +123,10 @@ the comment field. We have also a list of excluded words to avoid false positive
 Unknown iD instance
 -------------------
 
-Verify the changesets made in iD editor to check the host instance. The trusted
+Verify the changesets created with iD editor to check the host instance. The trusted
 iD instances are: `OSM.org <http://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_,
-`ImproveOSM <http://improveosm.org>`_ and `iDeditor <http://preview.ideditor.com/master/>`_.
+`ImproveOSM <http://improveosm.org>`_, `iDeditor <http://preview.ideditor.com/master/>`_,
+`Hey <https://hey.mapbox.com/iD-internal/>`_ and `iD indoor <http://projets.pavie.info/id-indoor/>`_.
 
 
 Tests

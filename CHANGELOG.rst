@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.2] - 2017-08-29
+
+- Add 'hey.mapbox.com/iD-internal/' and 'projets.pavie.info/id-indoor/' to the trusted hosts
+
 [0.4.1] - 2017-08-17
 
 - Flag changesets with the tag 'review_requested=yes'
