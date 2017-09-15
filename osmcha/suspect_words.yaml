@@ -9,6 +9,10 @@ sources:
 - navteq
 - teleatlas
 - yelp
+- yandex
+- яндекс
+- 2gis
+- 2гис
 
 common:
 - pokemon
