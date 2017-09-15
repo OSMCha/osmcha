@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.3] - 2017-09-15
+
+- Add yandex and 2gis as suspect sources
+
 [0.4.2] - 2017-08-29
 
 - Add 'hey.mapbox.com/iD-internal/' and 'projets.pavie.info/id-indoor/' to the trusted hosts
