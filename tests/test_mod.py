@@ -24,6 +24,10 @@ def test_find_words():
     assert find_words('GooGle is not important', suspect_words, excluded_words)
     assert not find_words('somewhere in the world', suspect_words, excluded_words)
     assert find_words('дані по імпорту', suspect_words, excluded_words)
+    assert find_words('places from yandex', suspect_words, excluded_words)
+    assert find_words('places from яндекс', suspect_words, excluded_words)
+    assert find_words('places from 2gis', suspect_words, excluded_words)
+    assert find_words('places from 2гис', suspect_words, excluded_words)
 
 
 def test_changeset_list():
