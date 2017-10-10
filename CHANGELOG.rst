@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.4] - 2017-10-10
+
+- Add mapcat as a trusted host
+
 [0.4.3] - 2017-09-15
 
 - Add yandex and 2gis as suspect sources

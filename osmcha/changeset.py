@@ -327,7 +327,8 @@ class Analyse(object):
                     'preview.ideditor.com/release',
                     'preview.ideditor.com/master',
                     'hey.mapbox.com/iD-internal/',
-                    'projets.pavie.info/id-indoor/'
+                    'projets.pavie.info/id-indoor/',
+                    'www.mapcat.com/edit'
                     ]
                 if self.host.split('://')[-1] not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')
