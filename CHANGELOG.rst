@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.6] - 2018-03-12
+
+-Improve documentation and fix wrong variable in get_user_details function.
+
 [0.4.5] - 2018-03-12
 
 - Improve 'New mapper reason' considering also the number of mapping days of the user.

@@ -17,6 +17,8 @@ but also can be used standalone or in other projects.
 Installation
 ============
 
+.. code-block:: console
+
     pip install osmcha
 
 Usage
@@ -112,6 +114,7 @@ You can customize the words by setting another default file with a environment
 variable:
 
 .. code-block:: console
+
   export SUSPECT_WORDS=<path_to_the_file>
 
 or pass a list of words to the ``Analyse`` class, more information on the section
@@ -120,13 +123,27 @@ or pass a list of words to the ``Analyse`` class, more information on the sectio
 the comment field. We have also a list of excluded words to avoid false positives.
 
 
+New mapper
+-----------
+
+Verify if the user has less than 5 edits or less than 5 mapping days.
+
+
+User has multiple blocks
+------------------------
+
+Changesets created by users that has received more than one block will be
+flagged.
+
+
 Unknown iD instance
 -------------------
 
 Verify the changesets created with iD editor to check the host instance. The trusted
 iD instances are: `OSM.org <http://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_,
 `ImproveOSM <http://improveosm.org>`_, `iDeditor <http://preview.ideditor.com/master/>`_,
-`Hey <https://hey.mapbox.com/iD-internal/>`_ and `iD indoor <http://projets.pavie.info/id-indoor/>`_.
+`Hey <https://hey.mapbox.com/iD-internal/>`_, `Mapcat <www.mapcat.com/edit>`_ and
+`iD indoor <http://projets.pavie.info/id-indoor/>`_.
 
 
 Tests

@@ -43,6 +43,9 @@ class InvalidChangesetError(Exception):
 
 
 def get_user_details(user_id):
+    """Get information about number of changesets, blocks and mapping days of a
+    user, using both the OSM API and the Mapbox comments APIself.
+    """
     reasons = []
     try:
         url = OSM_USERS_API.format(user_id=requests.compat.quote(user_id))
@@ -69,7 +72,7 @@ def get_user_details(user_id):
                 reasons.append('User has multiple blocks')
     except Exception as e:
         message = 'Could not verify user of the changeset: {}, {}'
-        print(message.format(self.id, str(e)))
+        print(message.format(user_id, str(e)))
     return reasons
 
 
