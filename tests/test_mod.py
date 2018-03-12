@@ -560,6 +560,21 @@ def test_changeset_by_new_mapper():
     assert changeset.is_suspect
 
 
+def test_changeset_by_new_mapper():
+    changeset = Analyse(36700893)
+    changeset.full_analysis()
+    print(changeset.suspicion_reasons)
+    assert 'New mapper' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
+def test_changeset_with_6_mapping_days():
+    changeset = Analyse(13523366)
+    changeset.full_analysis()
+    assert 'New mapper' not in changeset.suspicion_reasons
+    assert not changeset.is_suspect
+
+
 def test_changeset_by_old_mapper_with_unicode_username():
     changeset = Analyse(46790192)
     changeset.full_analysis()
