@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.5] - 2018-03-12
+
+- Improve 'New mapper reason' considering also the number of mapping days of the user.
+
 [0.4.4] - 2017-10-10
 
 - Add mapcat as a trusted host
