@@ -101,7 +101,7 @@ def get_changeset(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = 'http://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
+    url = 'https://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
         changeset
         )
     return ET.fromstring(requests.get(url).content)
@@ -114,7 +114,7 @@ def get_metadata(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = 'http://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
+    url = 'https://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
     return ET.fromstring(requests.get(url).content).getchildren()[0]
 
 

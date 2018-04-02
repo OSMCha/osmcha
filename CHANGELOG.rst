@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.7] - 2018-04-02
+
+- Use https in all OSM.org API requests
+
 [0.4.6] - 2018-03-12
 
 -Improve documentation and fix wrong variable in get_user_details function.
