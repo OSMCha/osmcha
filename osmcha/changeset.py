@@ -347,15 +347,16 @@ class Analyse(object):
                 trusted_hosts = [
                     'www.openstreetmap.org/id',
                     'www.openstreetmap.org/edit',
-                    'improveosm.org/',
-                    'strava.github.io/iD/',
+                    'improveosm.org',
+                    'strava.github.io/iD',
                     'preview.ideditor.com/release',
                     'preview.ideditor.com/master',
-                    'hey.mapbox.com/iD-internal/',
-                    'projets.pavie.info/id-indoor/',
-                    'www.mapcat.com/edit'
+                    'hey.mapbox.com/iD-internal',
+                    'projets.pavie.info/id-indoor',
+                    'maps.mapcat.com/edit',
+                    'id.softek.ir'
                     ]
-                if self.host.split('://')[-1] not in trusted_hosts:
+                if self.host.split('://')[-1].strip('/') not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')
         else:
             self.powerfull_editor = True

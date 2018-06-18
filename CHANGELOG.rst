@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.4.8] - 2018-06-18
+
+- Update trusted iD instances
+
 [0.4.7] - 2018-04-02
 
 - Use https in all OSM.org API requests

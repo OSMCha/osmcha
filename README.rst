@@ -142,8 +142,10 @@ Unknown iD instance
 Verify the changesets created with iD editor to check the host instance. The trusted
 iD instances are: `OSM.org <http://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_,
 `ImproveOSM <http://improveosm.org>`_, `iDeditor <http://preview.ideditor.com/master/>`_,
-`Hey <https://hey.mapbox.com/iD-internal/>`_, `Mapcat <www.mapcat.com/edit>`_ and
+`Hey <https://hey.mapbox.com/iD-internal/>`_, `Mapcat <maps.mapcat.com/edit>`_ and
 `iD indoor <http://projets.pavie.info/id-indoor/>`_.
+
+If you deploy an iD instance for an organization, please let us know so we can whitelist it.
 
 
 Tests
