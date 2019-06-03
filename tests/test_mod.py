@@ -345,6 +345,28 @@ def test_analyse_verify_editor_id_strava():
     assert ch.suspicion_reasons == []
 
 
+def test_analyse_verify_editor_rapid():
+    """Test if RapiD is not a powerfull_editor and a trusted instance."""
+    ch_dict = {
+        'created_by': 'RapiD 0.9.0',
+        'host': 'https://mapwith.ai/rapid',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert ch.suspicion_reasons == []
+
+
 def test_analyse_verify_editor_id_unknown_instance():
     """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
     to suspicion_reasons.
