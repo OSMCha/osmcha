@@ -27,7 +27,7 @@ except TypeError:
         'SUSPECT_WORDS',
         failobj=join(dirname(abspath(__file__)), 'suspect_words.yaml')
         )
-WORDS = yaml.load(open(SUSPECT_WORDS_FILE, 'r').read())
+WORDS = yaml.safe_load(open(SUSPECT_WORDS_FILE, 'r').read())
 OSM_USERS_API = environ.get(
     'OSM_USERS_API',
     'https://www.openstreetmap.org/api/0.6/user/{user_id}'
@@ -52,7 +52,7 @@ def get_user_details(user_id):
         user_request = requests.get(url)
         if user_request.status_code == 200:
             user_data = user_request.content
-            xml_data = ET.fromstring(user_data).getchildren()[0].getchildren()
+            xml_data = ET.fromstring(user_data)[0]
             changesets = [i for i in xml_data if i.tag == 'changesets'][0]
             blocks = [i for i in xml_data if i.tag == 'blocks'][0]
             if int(changesets.get('count')) <= 5:
@@ -68,7 +68,7 @@ def get_user_details(user_id):
                         )
                     if mapping_days <= 5:
                         reasons.append('New mapper')
-            if int(blocks.getchildren()[0].get('count')) > 1:
+            if int(blocks[0].get('count')) > 1:
                 reasons.append('User has multiple blocks')
     except Exception as e:
         message = 'Could not verify user of the changeset: {}, {}'
@@ -83,9 +83,9 @@ def changeset_info(changeset):
     Args:
         changeset: the XML string of the changeset.
     """
-    keys = [tag.attrib.get('k') for tag in changeset.getchildren()]
+    keys = [tag.attrib.get('k') for tag in changeset]
     keys += ['id', 'user', 'uid', 'bbox', 'created_at']
-    values = [tag.attrib.get('v') for tag in changeset.getchildren()]
+    values = [tag.attrib.get('v') for tag in changeset]
     values += [
         changeset.get('id'), changeset.get('user'), changeset.get('uid'),
         get_bounds(changeset), changeset.get('created_at')
@@ -115,7 +115,7 @@ def get_metadata(changeset):
         changeset: the id of the changeset.
     """
     url = 'https://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
-    return ET.fromstring(requests.get(url).content).getchildren()[0]
+    return ET.fromstring(requests.get(url).content)[0]
 
 
 def get_bounds(changeset):
@@ -204,7 +204,7 @@ class ChangesetList(object):
             self.get_area(geojson)
             self.filter()
         else:
-            self.content = self.xml.getchildren()
+            self.content = self.xml
         self.changesets = [changeset_info(ch) for ch in self.content]
 
     def read_file(self, changeset_file):
@@ -235,7 +235,7 @@ class ChangesetList(object):
         """Filter the changesets that intersects with the geojson geometry."""
         self.content = [
             ch
-            for ch in self.xml.getchildren()
+            for ch in self.xml
             if get_bounds(ch).intersects(self.area)
             ]
 
@@ -369,7 +369,7 @@ class Analyse(object):
         a mass deletion.
         """
         xml = get_changeset(self.id)
-        actions = [action.tag for action in xml.getchildren()]
+        actions = [action.tag for action in xml]
         self.create = actions.count('create')
         self.modify = actions.count('modify')
         self.delete = actions.count('delete')
