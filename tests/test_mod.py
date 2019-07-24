@@ -28,7 +28,7 @@ def test_find_words():
     assert find_words('places from 2gis', suspect_words, excluded_words)
     assert find_words('places from 2гис', suspect_words, excluded_words)
     assert find_words('places from yandex', suspect_words, excluded_words)
-    assert not find_words('yandex panorama', suspect_words, excluded_words)
+    assert not find_words('Yandex Panorama', suspect_words, excluded_words)
 
 
 def test_changeset_list():
@@ -180,6 +180,26 @@ def test_analyse_verify_words():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Somewhere in Brazil',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_words()
+    assert not ch.is_suspect
+
+    ch_dict = {
+        'created_by': 'Potlatch 2',
+        'created_at': '2015-04-25T18:08:46Z',
+        'build': '2.3-650-gad99430',
+        'version': '2.3',
+        'comment': 'Somewhere in Brazil',
+        'source': 'Yandex Panorama',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',

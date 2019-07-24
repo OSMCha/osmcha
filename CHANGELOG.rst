@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+[0.4.11] - 2019-07-24
+
+- Fix "yandex panorama" whitelisting
+
+[0.4.10] - 2019-06-21
+
+- Add "yandex panorama" to the excluded words list
+
+[0.4.9] - 2019-06-03
+
+- Add "mapwith.ai/rapid" to the list of trusted users
+
 [0.4.8] - 2018-06-18
 
 - Update trusted iD instances

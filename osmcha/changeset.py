@@ -146,7 +146,7 @@ def make_regex(words):
         words: a list or tuple of strings,
     """
     return r'|'.join(
-        ["^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
+        [r"^{word}\.*|\.* {word}\.*".format(word=word) for word in words]
         )
 
 
@@ -319,8 +319,11 @@ class Analyse(object):
         if self.source:
             for word in self.illegal_sources:
                 if word in self.source.lower():
-                    self.label_suspicious('suspect_word')
-                    break
+                    if word == 'yandex' and 'yandex panorama' in self.source.lower():
+                        pass
+                    else:
+                        self.label_suspicious('suspect_word')
+                        break
 
         if self.imagery_used:
             for word in self.illegal_sources:
