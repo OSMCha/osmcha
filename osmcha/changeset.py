@@ -358,7 +358,8 @@ class Analyse(object):
                     'projets.pavie.info/id-indoor',
                     'maps.mapcat.com/edit',
                     'id.softek.ir',
-                    'mapwith.ai/rapid'
+                    'mapwith.ai/rapid',
+                    'mapwith.ai/rapidtest',
                     ]
                 if self.host.split('://')[-1].strip('/') not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')
