@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[0.5.0] - 2019-08-19
+
+- Include new suspicion reasons based on 'warnings:' tags added by iD
+- Include RapiD test instance as trusted host
+
 [0.4.11] - 2019-07-24
 
 - Fix "yandex panorama" whitelisting
