@@ -264,6 +264,21 @@ class Analyse(object):
         self.excluded_words = excluded_words
         self.illegal_sources = illegal_sources
         self.suspect_words = suspect_words
+        self.enabled_warnings = {
+            'warnings:almost_junction': 'Almost junction',
+            'warnings:close_nodes': 'Very close points',
+            'warnings:crossing_ways': 'Crossing ways',
+            'warnings:disconnected_way': 'Disconnected way',
+            'warnings:generic_name': 'Generic name',
+            'warnings:impossible_oneway': 'Impossible oneway',
+            'warnings:incompatible_source': 'suspect_word',
+            'warnings:missing_role': 'Missing role',
+            'warnings:missing_tag': 'Missing tag',
+            'warnings:outdated_tags': 'Outdated tags',
+            'warnings:private_data': 'Private information',
+            'warnings:tag_suggests_area': 'Line tagged as area',
+            'warnings:unsquare_way': 'Unsquare corners',
+            }
 
     def set_fields(self, changeset):
         """Set the fields of this class with the metadata of the analysed
@@ -286,6 +301,9 @@ class Analyse(object):
         self.suspicion_reasons = []
         self.is_suspect = False
         self.powerfull_editor = False
+        self.warning_tags = [
+            i for i in changeset.keys() if i.startswith('warnings:')
+            ]
 
     def label_suspicious(self, reason):
         """Add suspicion reason and set the suspicious flag."""
@@ -297,9 +315,15 @@ class Analyse(object):
         self.count()
         self.verify_words()
         self.verify_user()
+        self.verify_warning_tags()
 
         if self.review_requested == 'yes':
             self.label_suspicious('Review requested')
+
+    def verify_warning_tags(self):
+        for tag in self.warning_tags:
+            if tag in self.enabled_warnings.keys():
+                self.label_suspicious(self.enabled_warnings.get(tag))
 
     def verify_user(self):
         """Verify if the changeset was made by a inexperienced mapper (anyone
@@ -403,7 +427,8 @@ class Analyse(object):
         fields_to_remove = [
             'create_threshold', 'modify_threshold', 'illegal_sources',
             'delete_threshold', 'percentage', 'top_threshold', 'suspect_words',
-            'excluded_words', 'host', 'review_requested',
+            'excluded_words', 'host', 'review_requested', 'warning_tags',
+            'enabled_warnings'
             ]
         for field in fields_to_remove:
             ch_dict.pop(field)

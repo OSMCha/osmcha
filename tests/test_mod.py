@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from datetime import datetime
-
 from pytest import raises
 from shapely.geometry import Polygon
 
@@ -582,6 +581,26 @@ def test_get_dict():
     assert 'delete' in ch.get_dict().keys()
     assert len(ch.get_dict().keys()) == 15
 
+    # An iD changeset with warnings:
+    ch = Analyse(72783703)
+    ch.full_analysis()
+    assert 'id' in ch.get_dict().keys()
+    assert 'user' in ch.get_dict().keys()
+    assert 'uid' in ch.get_dict().keys()
+    assert 'editor' in ch.get_dict().keys()
+    assert 'bbox' in ch.get_dict().keys()
+    assert 'date' in ch.get_dict().keys()
+    assert 'comment' in ch.get_dict().keys()
+    assert 'source' in ch.get_dict().keys()
+    assert 'imagery_used' in ch.get_dict().keys()
+    assert 'is_suspect' in ch.get_dict().keys()
+    assert 'powerfull_editor' in ch.get_dict().keys()
+    assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'create' in ch.get_dict().keys()
+    assert 'modify' in ch.get_dict().keys()
+    assert 'delete' in ch.get_dict().keys()
+    assert len(ch.get_dict().keys()) == 15
+
     # A JOSM changeset
     ch = Analyse(46315321)
     ch.full_analysis()
@@ -673,3 +692,153 @@ def test_changeset_with_review_requested():
     changeset.full_analysis()
     assert 'Review requested' in changeset.suspicion_reasons
     assert changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_almost_junction():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:almost_junction': '1',
+        'warnings:missing_role': '1',
+        'warnings:missing_tag': '1',
+        'warnings:private_data': '1',
+        'warnings:tag_suggests_area': '1',
+        'warnings:unsquare_way': '1',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert 'Almost junction' in changeset.suspicion_reasons
+    assert 'Missing role' in changeset.suspicion_reasons
+    assert 'Missing tag' in changeset.suspicion_reasons
+    assert 'Private information' in changeset.suspicion_reasons
+    assert 'Line tagged as area' in changeset.suspicion_reasons
+    assert 'Unsquare corners' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_close_nodes():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:close_nodes': '1',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert 'Very close points' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_crossing_ways():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:crossing_ways': '1',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert 'Crossing ways' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_disconnected_way():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:disconnected_way': '4',
+        'warnings:generic_name': '4',
+        'warnings:impossible_oneway': '4',
+        'warnings:incompatible_source': '4',
+        'warnings:outdated_tags': '9',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert 'Disconnected way' in changeset.suspicion_reasons
+    assert 'Generic name' in changeset.suspicion_reasons
+    assert 'Impossible oneway' in changeset.suspicion_reasons
+    assert 'suspect_word' in changeset.suspicion_reasons
+    assert 'Outdated tags' in changeset.suspicion_reasons
+    assert changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_fix_me():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:fix_me': '0',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert changeset.suspicion_reasons == []
+    assert not changeset.is_suspect
+
+
+def test_changeset_with_warning_tag_invalid_format():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': 'https://www.openstreetmap.org/edit',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'warnings:invalid_format': '0',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    assert changeset.suspicion_reasons == []
+    assert not changeset.is_suspect
