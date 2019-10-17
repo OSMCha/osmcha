@@ -409,13 +409,13 @@ def test_analyse_verify_editor_rapid_test():
     assert ch.suspicion_reasons == []
 
 
-def test_analyse_verify_editor_id_unknown_instance():
+def test_verify_editor_id_unknown_instance():
     """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
     to suspicion_reasons.
     """
     ch_dict = {
         'created_by': 'iD 1.7.3',
-        'host': 'http://anotherhost.com',
+        'host': 'http://anotherhost.com/iD',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
@@ -432,6 +432,31 @@ def test_analyse_verify_editor_id_unknown_instance():
     assert ch.powerfull_editor is False
     assert 'Unknown iD instance' in ch.suspicion_reasons
     assert ch.is_suspect
+
+
+def test_verify_editor_id_is_known_instance():
+    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
+    to suspicion_reasons.
+    """
+    ch_dict = {
+        'created_by': 'iD 1.7.3',
+        'host': 'https://www.openstreetmap.org/iD',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert 'Unknown iD instance' not in ch.suspicion_reasons
+    assert ch.is_suspect is False
 
 
 def test_analyse_verify_editor_Potlatch2():

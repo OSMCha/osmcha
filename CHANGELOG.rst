@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.5.1] - 2019-10-17
+
+- Trusted iD editors based on host domain not on the complete host address
+
 [0.5.0] - 2019-08-19
 
 - Include new suspicion reasons based on 'warnings:' tags added by iD
