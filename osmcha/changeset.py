@@ -373,10 +373,8 @@ class Analyse(object):
             if 'iD' in self.editor:
                 trusted_hosts = [
                     'www.openstreetmap.org',
-                    'www.openstreetmap.org',
                     'improveosm.org',
                     'strava.github.io',
-                    'preview.ideditor.com',
                     'preview.ideditor.com',
                     'hey.mapbox.com',
                     'projets.pavie.info',
