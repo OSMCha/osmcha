@@ -5,6 +5,7 @@ from pytest import raises
 from shapely.geometry import Polygon
 
 from osmcha.changeset import ChangesetList
+from osmcha.changeset import Reason
 from osmcha.changeset import Analyse
 from osmcha.changeset import WORDS
 from osmcha.changeset import find_words
@@ -100,8 +101,9 @@ def test_analyse_label_suspicious():
             ])
         }
     ch = Analyse(ch_dict)
-    ch.label_suspicious('some reason')
+    ch.label_suspicious(Reason('some reason'))
     assert 'some reason' in ch.suspicion_reasons
+    assert ch.detailed_reasons['some reason'].identifier == 'some reason'
     assert ch.is_suspect
 
 
@@ -601,10 +603,11 @@ def test_get_dict():
     assert 'is_suspect' in ch.get_dict().keys()
     assert 'powerfull_editor' in ch.get_dict().keys()
     assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'detailed_reasons' in ch.get_dict().keys()
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert len(ch.get_dict().keys()) == 16
 
     # An iD changeset with warnings:
     ch = Analyse(72783703)
@@ -621,10 +624,11 @@ def test_get_dict():
     assert 'is_suspect' in ch.get_dict().keys()
     assert 'powerfull_editor' in ch.get_dict().keys()
     assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'detailed_reasons' in ch.get_dict().keys()
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert len(ch.get_dict().keys()) == 16
 
     # A JOSM changeset
     ch = Analyse(46315321)
@@ -641,10 +645,11 @@ def test_get_dict():
     assert 'is_suspect' in ch.get_dict().keys()
     assert 'powerfull_editor' in ch.get_dict().keys()
     assert 'suspicion_reasons' in ch.get_dict().keys()
+    assert 'detailed_reasons' in ch.get_dict().keys()
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert len(ch.get_dict().keys()) == 16
 
 
 def test_changeset_without_tags():

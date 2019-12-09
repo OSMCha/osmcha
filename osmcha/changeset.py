@@ -42,6 +42,14 @@ class InvalidChangesetError(Exception):
     pass
 
 
+class Reason:
+    """Details and meta-data for a suspicion reason."""
+    def __init__(self, identifier, label=None, source="osmcha"):
+        self.identifier = identifier
+        self.label = label if label else identifier
+        self.source = source
+
+
 def get_user_details(user_id):
     """Get information about number of changesets, blocks and mapping days of a
     user, using both the OSM API and the Mapbox comments APIself.
@@ -56,7 +64,7 @@ def get_user_details(user_id):
             changesets = [i for i in xml_data if i.tag == 'changesets'][0]
             blocks = [i for i in xml_data if i.tag == 'blocks'][0]
             if int(changesets.get('count')) <= 5:
-                reasons.append('New mapper')
+                reasons.append(Reason('New mapper'))
             elif int(changesets.get('count')) <= 30:
                 url = MAPBOX_USERS_API.format(
                     user_id=requests.compat.quote(user_id)
@@ -67,9 +75,9 @@ def get_user_details(user_id):
                         user_request.json().get('extra').get('mapping_days')
                         )
                     if mapping_days <= 5:
-                        reasons.append('New mapper')
+                        reasons.append(Reason('New mapper'))
             if int(blocks[0].get('count')) > 1:
-                reasons.append('User has multiple blocks')
+                reasons.append(Reason('User has multiple blocks'))
     except Exception as e:
         message = 'Could not verify user of the changeset: {}, {}'
         print(message.format(user_id, str(e)))
@@ -239,7 +247,6 @@ class ChangesetList(object):
             if get_bounds(ch).intersects(self.area)
             ]
 
-
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
     def __init__(self, changeset, create_threshold=200, modify_threshold=200,
@@ -299,6 +306,7 @@ class Analyse(object):
             '%Y-%m-%dT%H:%M:%SZ'
             )
         self.suspicion_reasons = []
+        self.detailed_reasons = {}
         self.is_suspect = False
         self.powerfull_editor = False
         self.warning_tags = [
@@ -307,7 +315,8 @@ class Analyse(object):
 
     def label_suspicious(self, reason):
         """Add suspicion reason and set the suspicious flag."""
-        self.suspicion_reasons.append(reason)
+        self.suspicion_reasons.append(reason.identifier)
+        self.detailed_reasons[reason.identifier] = reason
         self.is_suspect = True
 
     def full_analysis(self):
@@ -318,12 +327,12 @@ class Analyse(object):
         self.verify_warning_tags()
 
         if self.review_requested == 'yes':
-            self.label_suspicious('Review requested')
+            self.label_suspicious(Reason('Review requested'))
 
     def verify_warning_tags(self):
         for tag in self.warning_tags:
             if tag in self.enabled_warnings.keys():
-                self.label_suspicious(self.enabled_warnings.get(tag))
+                self.label_suspicious(Reason(self.enabled_warnings.get(tag), None, self.editor))
 
     def verify_user(self):
         """Verify if the changeset was made by a inexperienced mapper (anyone
@@ -338,7 +347,7 @@ class Analyse(object):
         """
         if self.comment:
             if find_words(self.comment, self.suspect_words, self.excluded_words):
-                self.label_suspicious('suspect_word')
+                self.label_suspicious(Reason('suspect_word'))
 
         if self.source:
             for word in self.illegal_sources:
@@ -346,13 +355,13 @@ class Analyse(object):
                     if word == 'yandex' and 'yandex panorama' in self.source.lower():
                         pass
                     else:
-                        self.label_suspicious('suspect_word')
+                        self.label_suspicious(Reason('suspect_word'))
                         break
 
         if self.imagery_used:
             for word in self.illegal_sources:
                 if word in self.imagery_used.lower():
-                    self.label_suspicious('suspect_word')
+                    self.label_suspicious(Reason('suspect_word'))
                     break
 
         self.suspicion_reasons = list(set(self.suspicion_reasons))
@@ -383,10 +392,10 @@ class Analyse(object):
                     'mapwith.ai'
                     ]
                 if self.host.split('://')[-1].split('/')[0] not in trusted_hosts:
-                    self.label_suspicious('Unknown iD instance')
+                    self.label_suspicious(Reason('Unknown iD instance'))
         else:
             self.powerfull_editor = True
-            self.label_suspicious('Software editor was not declared')
+            self.label_suspicious(Reason('Software editor was not declared'))
 
     def count(self):
         """Count the number of elements created, modified and deleted by the
@@ -404,14 +413,14 @@ class Analyse(object):
             if (self.create / len(actions) > self.percentage and
                     self.create > self.create_threshold and
                     (self.powerfull_editor or self.create > self.top_threshold)):
-                self.label_suspicious('possible import')
+                self.label_suspicious(Reason('possible import'))
             elif (self.modify / len(actions) > self.percentage and
                     self.modify > self.modify_threshold):
-                self.label_suspicious('mass modification')
+                self.label_suspicious(Reason('mass modification'))
             elif ((self.delete / len(actions) > self.percentage and
                     self.delete > self.delete_threshold) or
                     self.delete > self.top_threshold):
-                self.label_suspicious('mass deletion')
+                self.label_suspicious(Reason('mass deletion'))
         except ZeroDivisionError:
             print('It seems this changeset was redacted')
 
