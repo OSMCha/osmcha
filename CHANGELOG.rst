@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.5.2] - 2020-03-23
+
+- Add HOTOSM Tasking Manager URLs to trusted hosts list
+
 [0.5.1] - 2019-10-17
 
 - Trusted iD editors based on host domain not on the complete host address

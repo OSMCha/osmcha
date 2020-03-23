@@ -172,7 +172,7 @@ Related projects
 ================
 
 * `osmcha-django <https://github.com/willemarcel/osmcha-django>`_ - backend and API
-* `osmcha-frontend <https://github.com/mapbox/osmcha-frontend>`_ - frontend of the `OSMCha <https://osmcha.mapbox.com>`_ application
+* `osmcha-frontend <https://github.com/mapbox/osmcha-frontend>`_ - frontend of the `OSMCha <https://osmcha.org>`_ application
 * `osm-compare <https://github.com/mapbox/osm-compare>`_ - library that analyse OSM features to input it to OSMCha
 
 License
