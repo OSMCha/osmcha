@@ -168,7 +168,9 @@ def find_words(text, suspect_words, excluded_words=[]):
     text = text.lower()
     suspect_found = [i for i in re.finditer(make_regex(suspect_words), text)]
     if len(excluded_words) > 0:
-        excluded_found = [i for i in re.finditer(make_regex(excluded_words), text)]
+        excluded_found = [
+            i for i in re.finditer(make_regex(excluded_words), text)
+            ]
         if len(suspect_found) > len(excluded_found):
             return True
         else:
@@ -182,8 +184,8 @@ def find_words(text, suspect_words, excluded_words=[]):
 
 class ChangesetList(object):
     """Read replication changeset file and return a list with the XML data of
-    each changeset. You can filter the changesets by passing a geojson file with
-    a Polygon of your area of interest.
+    each changeset. You can filter the changesets by passing a geojson file
+    with a Polygon of your area of interest.
     """
 
     def __init__(self, changeset_file, geojson=None):
@@ -229,7 +231,9 @@ class ChangesetList(object):
         object.
         """
         geojson = json.load(open(geojson, 'r'))
-        self.area = Polygon(geojson['features'][0]['geometry']['coordinates'][0])
+        self.area = Polygon(
+            geojson['features'][0]['geometry']['coordinates'][0]
+            )
 
     def filter(self):
         """Filter the changesets that intersects with the geojson geometry."""
@@ -380,7 +384,10 @@ class Analyse(object):
                     'projets.pavie.info',
                     'maps.mapcat.com',
                     'id.softek.ir',
-                    'mapwith.ai'
+                    'mapwith.ai',
+                    'tm4.hotosm.org',
+                    'tasks-stage.hotosm.org',
+                    'tasks.hotosm.org',
                     ]
                 if self.host.split('://')[-1].split('/')[0] not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')

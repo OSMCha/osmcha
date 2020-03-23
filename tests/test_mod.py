@@ -459,6 +459,50 @@ def test_verify_editor_id_is_known_instance():
     assert ch.is_suspect is False
 
 
+def test_verify_hotosm_id_is_known_instance():
+    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
+    to suspicion_reasons.
+    """
+    ch1 = {
+        'created_by': 'iD 1.7.3',
+        'host': 'https://tm4.hotosm.org/projects/23/map/',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch2 = {
+        'created_by': 'iD 1.7.3',
+        'host': 'https://tasks.hotosm.org/projects/23/map/',
+        'created_at': '2015-04-25T18:08:46Z',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch1)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert 'Unknown iD instance' not in ch.suspicion_reasons
+    assert ch.is_suspect is False
+    ch_2 = Analyse(ch2)
+    ch_2.verify_editor()
+    assert ch_2.powerfull_editor is False
+    assert 'Unknown iD instance' not in ch_2.suspicion_reasons
+    assert ch_2.is_suspect is False
+
+
 def test_analyse_verify_editor_Potlatch2():
     """Test if Potlatch 2 is not a powerfull_editor."""
     ch_dict = {
