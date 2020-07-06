@@ -380,6 +380,7 @@ class Analyse(object):
                     'improveosm.org',
                     'strava.github.io',
                     'preview.ideditor.com',
+                    'ideditor.netlify.app',
                     'hey.mapbox.com',
                     'projets.pavie.info',
                     'maps.mapcat.com',
