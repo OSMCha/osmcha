@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[0.5.3] - 2020-03-23
+
+- Add ideditor.netlify.app to trusted hosts list
+- Fix iD editor validation warnings
+
 [0.5.2] - 2020-03-23
 
 - Add HOTOSM Tasking Manager URLs to trusted hosts list
