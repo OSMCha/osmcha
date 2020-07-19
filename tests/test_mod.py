@@ -9,6 +9,7 @@ from osmcha.changeset import Analyse
 from osmcha.changeset import WORDS
 from osmcha.changeset import find_words
 from osmcha.changeset import InvalidChangesetError
+from osmcha.warnings import Warnings
 
 
 def test_find_words():
@@ -738,10 +739,9 @@ def test_changeset_by_new_mapper():
     assert changeset.is_suspect
 
 
-def test_changeset_by_new_mapper():
+def test_changeset_by_another_new_mapper():
     changeset = Analyse(36700893)
     changeset.full_analysis()
-    print(changeset.suspicion_reasons)
     assert 'New mapper' in changeset.suspicion_reasons
     assert changeset.is_suspect
 
@@ -797,11 +797,11 @@ def test_changeset_with_warning_tag_almost_junction():
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
-        'warnings:almost_junction': '1',
+        'warnings:almost_junction:highway-highway': '1',
         'warnings:missing_role': '1',
-        'warnings:missing_tag': '1',
+        'warnings:missing_tag:any': '1',
         'warnings:private_data': '1',
-        'warnings:tag_suggests_area': '1',
+        'warnings:mismatched_geometry': '1',
         'warnings:unsquare_way': '1',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
@@ -815,7 +815,7 @@ def test_changeset_with_warning_tag_almost_junction():
     assert 'Missing role' in changeset.suspicion_reasons
     assert 'Missing tag' in changeset.suspicion_reasons
     assert 'Private information' in changeset.suspicion_reasons
-    assert 'Line tagged as area' in changeset.suspicion_reasons
+    assert 'Mismatched geometry' in changeset.suspicion_reasons
     assert 'Unsquare corners' in changeset.suspicion_reasons
     assert changeset.is_suspect
 
@@ -829,7 +829,7 @@ def test_changeset_with_warning_tag_close_nodes():
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
-        'warnings:close_nodes': '1',
+        'warnings:close_nodes:detached': '1',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -851,7 +851,7 @@ def test_changeset_with_warning_tag_crossing_ways():
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
-        'warnings:crossing_ways': '1',
+        'warnings:crossing_ways:building-building': '1',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -873,11 +873,11 @@ def test_changeset_with_warning_tag_disconnected_way():
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
-        'warnings:disconnected_way': '4',
-        'warnings:generic_name': '4',
-        'warnings:impossible_oneway': '4',
+        'warnings:disconnected_way:highway': '4',
+        'warnings:suspicious_name:generic_name': '4',
+        'warnings:impossible_oneway:highway': '4',
         'warnings:incompatible_source': '4',
-        'warnings:outdated_tags': '9',
+        'warnings:outdated_tags:incomplete_tags': '9',
         'bbox': Polygon([
             (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
             (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -936,3 +936,34 @@ def test_changeset_with_warning_tag_invalid_format():
     changeset.full_analysis()
     assert changeset.suspicion_reasons == []
     assert not changeset.is_suspect
+
+
+def test_enabled_warnings():
+    warnings = Warnings()
+    assert warnings.get_non_exact_match_warnings() == [
+        {'tag': 'warnings:almost_junction', 'reason': 'Almost junction', 'exact_match': False},
+        {'tag': 'warnings:close_nodes', 'reason': 'Very close points', 'exact_match': False},
+        {'tag': 'warnings:crossing_ways', 'reason': 'Crossing ways', 'exact_match': False},
+        {'tag': 'warnings:disconnected_way', 'reason': 'Disconnected way', 'exact_match': False},
+        {'tag': 'warnings:impossible_oneway', 'reason': 'Impossible oneway', 'exact_match': False},
+        {'tag': 'warnings:incompatible_source', 'reason': 'suspect_word', 'exact_match': False},
+        {'tag': 'warnings:mismatched_geometry', 'reason': 'Mismatched geometry', 'exact_match': False},
+        {'tag': 'warnings:missing_role', 'reason': 'Missing role', 'exact_match': False},
+        {'tag': 'warnings:missing_tag', 'reason': 'Missing tag', 'exact_match': False},
+        {'tag': 'warnings:outdated_tags', 'reason': 'Outdated tags', 'exact_match': False},
+        {'tag': 'warnings:private_data', 'reason': 'Private information', 'exact_match': False},
+        {'tag': 'warnings:unsquare_way', 'reason': 'Unsquare corners', 'exact_match': False},
+        ]
+
+    assert warnings.get_exact_match_warnings() == [
+        {'tag': 'warnings:suspicious_name:generic_name', 'reason': 'Generic name', 'exact_match': True},
+        ]
+
+    assert warnings.is_enabled('warnings:crossing_ways:building-building') == 'Crossing ways'
+    assert warnings.is_enabled('warnings:crossing_ways:highway-building') == 'Crossing ways'
+    assert warnings.is_enabled('warnings:impossible_oneway:highway') == 'Impossible oneway'
+    assert warnings.is_enabled('warnings:suspicious_name:not-name') is None
+    assert warnings.is_enabled('warnings:suspicious_name:') is None
+    assert warnings.is_enabled('warnings:') is None
+    assert warnings.is_enabled('warnings') is None
+    assert warnings.is_enabled('warnings:suspicious_name:generic_name') == 'Generic name'
