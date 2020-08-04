@@ -82,6 +82,7 @@ def test_analyse_init():
     assert ch.user == 'JustTest'
     assert ch.uid == '123123'
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
+    assert ch.metadata == {'build': '2.3-650-gad99430', 'version': '2.3'}
 
 
 def test_analyse_label_suspicious():
@@ -491,7 +492,7 @@ def test_verify_hotosm_id_is_known_instance():
     """
     ch1 = {
         'created_by': 'iD 1.7.3',
-        'host': 'https://tm4.hotosm.org/projects/23/map/',
+        'host': 'https://tasks.teachosm.org/projects/23/map/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
         'id': '1',
@@ -674,7 +675,9 @@ def test_get_dict():
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert 'metadata' in ch.get_dict().keys()
+    assert ch.get_dict()['metadata']['host'] == 'https://www.openstreetmap.org/id'
+    assert len(ch.get_dict().keys()) == 16
 
     # An iD changeset with warnings:
     ch = Analyse(72783703)
@@ -694,7 +697,12 @@ def test_get_dict():
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert 'metadata' in ch.get_dict().keys()
+    assert ch.get_dict()['metadata']['host'] == 'https://www.openstreetmap.org/edit'
+    assert ch.get_dict()['metadata']['locale'] == 'en-US'
+    assert ch.get_dict()['metadata']['warnings:crossing_ways'] == 1
+    assert ch.get_dict()['metadata']['changesets_count'] == 5970
+    assert len(ch.get_dict().keys()) == 16
 
     # A JOSM changeset
     ch = Analyse(46315321)
@@ -714,7 +722,9 @@ def test_get_dict():
     assert 'create' in ch.get_dict().keys()
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
-    assert len(ch.get_dict().keys()) == 15
+    assert 'metadata' in ch.get_dict().keys()
+    assert ch.get_dict()['metadata'] == {}
+    assert len(ch.get_dict().keys()) == 16
 
 
 def test_changeset_without_tags():

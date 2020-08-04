@@ -38,6 +38,13 @@ MAPBOX_USERS_API = environ.get(
     'MAPBOX_USERS_API',
     'https://osm-comments-api.mapbox.com/api/v1/users/id/{user_id}?extra=true'
     )
+MANDATORY_TAGS = ['id', 'user', 'uid', 'bbox', 'created_at']
+# fields that will be removed on the Analyse.get_dict() method
+FIELDS_TO_REMOVE = [
+    'create_threshold', 'modify_threshold', 'illegal_sources',
+    'delete_threshold', 'percentage', 'top_threshold', 'suspect_words',
+    'excluded_words', 'warning_tags', 'host', 'review_requested'
+    ]
 
 
 class InvalidChangesetError(Exception):
@@ -86,7 +93,7 @@ def changeset_info(changeset):
         changeset: the XML string of the changeset.
     """
     keys = [tag.attrib.get('k') for tag in changeset]
-    keys += ['id', 'user', 'uid', 'bbox', 'created_at']
+    keys += MANDATORY_TAGS
     values = [tag.attrib.get('v') for tag in changeset]
     values += [
         changeset.get('id'), changeset.get('user'), changeset.get('uid'),
@@ -295,6 +302,21 @@ class Analyse(object):
         self.warning_tags = [
             i for i in changeset.keys() if i.startswith('warnings:')
             ]
+        self.metadata = {}
+        # host key is a special case
+        if changeset.get('host'):
+            self.metadata['host'] = changeset.get('host')
+        metadata_keys = [
+            key for key in changeset.keys()
+            if key not in self.__dict__.keys()
+            and key not in MANDATORY_TAGS + ['created_by']
+            and key not in FIELDS_TO_REMOVE
+            ]
+        for key in metadata_keys:
+            try:
+                self.metadata[key] = int(changeset.get(key))
+            except ValueError:
+                self.metadata[key] = changeset.get(key)
 
     def label_suspicious(self, reason):
         """Add suspicion reason and set the suspicious flag."""
@@ -374,7 +396,7 @@ class Analyse(object):
                     'maps.mapcat.com',
                     'id.softek.ir',
                     'mapwith.ai',
-                    'tm4.hotosm.org',
+                    'tasks.teachosm.org',
                     'tasks-stage.hotosm.org',
                     'tasks.hotosm.org',
                     ]
@@ -417,11 +439,6 @@ class Analyse(object):
             if self.__dict__.get(key) == '':
                 ch_dict.pop(key)
 
-        fields_to_remove = [
-            'create_threshold', 'modify_threshold', 'illegal_sources',
-            'delete_threshold', 'percentage', 'top_threshold', 'suspect_words',
-            'excluded_words', 'host', 'review_requested', 'warning_tags'
-            ]
-        for field in fields_to_remove:
+        for field in FIELDS_TO_REMOVE:
             ch_dict.pop(field)
         return ch_dict
