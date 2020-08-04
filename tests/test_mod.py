@@ -700,8 +700,8 @@ def test_get_dict():
     assert 'metadata' in ch.get_dict().keys()
     assert ch.get_dict()['metadata']['host'] == 'https://www.openstreetmap.org/edit'
     assert ch.get_dict()['metadata']['locale'] == 'en-US'
-    assert ch.get_dict()['metadata']['warnings:crossing_ways'] == '1'
-    assert ch.get_dict()['metadata']['changesets_count'] == '5970'
+    assert ch.get_dict()['metadata']['warnings:crossing_ways'] == 1
+    assert ch.get_dict()['metadata']['changesets_count'] == 5970
     assert len(ch.get_dict().keys()) == 16
 
     # A JOSM changeset
@@ -723,6 +723,7 @@ def test_get_dict():
     assert 'modify' in ch.get_dict().keys()
     assert 'delete' in ch.get_dict().keys()
     assert 'metadata' in ch.get_dict().keys()
+    assert ch.get_dict()['metadata'] == {}
     assert len(ch.get_dict().keys()) == 16
 
 

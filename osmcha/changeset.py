@@ -313,7 +313,10 @@ class Analyse(object):
             and key not in FIELDS_TO_REMOVE
             ]
         for key in metadata_keys:
-            self.metadata[key] = changeset.get(key)
+            try:
+                self.metadata[key] = int(changeset.get(key))
+            except ValueError:
+                self.metadata[key] = changeset.get(key)
 
     def label_suspicious(self, reason):
         """Add suspicion reason and set the suspicious flag."""
