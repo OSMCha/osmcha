@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+[0.7.0] - 2020-08-04
+
+* Register changeset arbitrary tags under the metadata field
+* Add tasks.teachosm.org as trusted host
+
+[0.6.0] - 2020-06-19
+
+* Fix iD validation warnings
+
 [0.5.3] - 2020-03-23
 
 - Add ideditor.netlify.app to trusted hosts list
