@@ -38,7 +38,8 @@ MAPBOX_USERS_API = environ.get(
     'MAPBOX_USERS_API',
     'https://osm-comments-api.mapbox.com/api/v1/users/id/{user_id}?extra=true'
     )
-MANDATORY_TAGS = ['id', 'user', 'uid', 'bbox', 'created_at']
+# information that we get from changeset xml key
+MANDATORY_TAGS = ['id', 'user', 'uid', 'bbox', 'created_at', 'comments_count']
 # fields that will be removed on the Analyse.get_dict() method
 FIELDS_TO_REMOVE = [
     'create_threshold', 'modify_threshold', 'illegal_sources',
@@ -86,8 +87,8 @@ def get_user_details(user_id):
 
 
 def changeset_info(changeset):
-    """Return a dictionary with id, user, user_id, bounds, date of creation
-    and all the tags of the changeset.
+    """Return a dictionary with id, user, user_id, bounds, date of creation,
+    comments_count and all the tags of the changeset.
 
     Args:
         changeset: the XML string of the changeset.
@@ -97,7 +98,8 @@ def changeset_info(changeset):
     values = [tag.attrib.get('v') for tag in changeset]
     values += [
         changeset.get('id'), changeset.get('user'), changeset.get('uid'),
-        get_bounds(changeset), changeset.get('created_at')
+        get_bounds(changeset), changeset.get('created_at'),
+        changeset.get('comments_count')
         ]
 
     return dict(zip(keys, values))
@@ -290,6 +292,7 @@ class Analyse(object):
         self.host = changeset.get('host', 'Not reported')
         self.bbox = changeset.get('bbox').wkt
         self.comment = changeset.get('comment', 'Not reported')
+        self.comments_count = int(changeset.get('comments_count', 0))
         self.source = changeset.get('source', 'Not reported')
         self.imagery_used = changeset.get('imagery_used', 'Not reported')
         self.date = datetime.strptime(

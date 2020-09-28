@@ -40,6 +40,7 @@ def test_changeset_list():
     assert c.changesets[0]['user'] == 'GarrettB'
     assert c.changesets[0]['uid'] == '352373'
     assert c.changesets[0]['comment'] == 'Added Emerald Pool Waterfall'
+    assert c.changesets[0]['comments_count'] == '0'
     assert c.changesets[0]['bbox'] == Polygon([
         (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
         (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
@@ -66,6 +67,7 @@ def test_analyse_init():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Put data from Google',
+        'comments_count': '12',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -79,6 +81,7 @@ def test_analyse_init():
     assert ch.id == 1
     assert ch.editor == 'Potlatch 2'
     assert ch.comment == 'Put data from Google'
+    assert ch.comments_count == 12
     assert ch.user == 'JustTest'
     assert ch.uid == '123123'
     assert ch.date == datetime(2015, 4, 25, 18, 8, 46)
@@ -92,6 +95,7 @@ def test_analyse_label_suspicious():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Put data from Google',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -120,6 +124,7 @@ def test_analyse_verify_words():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Put data from Google',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -140,6 +145,7 @@ def test_analyse_verify_words():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'source': 'Waze',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -161,6 +167,7 @@ def test_analyse_verify_words():
         'version': '2.3',
         'imagery_used': 'Custom (http://{switch:a,b,c}.tiles.googlemaps.com/{zoom}/{x}/{y}.png)',
         'source': 'Bing',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -181,6 +188,7 @@ def test_analyse_verify_words():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Somewhere in Brazil',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -200,6 +208,7 @@ def test_analyse_verify_words():
         'build': '2.3-650-gad99430',
         'version': '2.3',
         'comment': 'Somewhere in Brazil',
+        'comments_count': '1',
         'source': 'Yandex Panorama',
         'id': '1',
         'user': 'JustTest',
@@ -221,6 +230,7 @@ def test_analyse_verify_editor_josm():
         'created_by': 'JOSM/1.5 (8339 en)',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '3',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -241,6 +251,7 @@ def test_analyse_verify_editor_merkaartor():
         'created_by': 'Merkaartor 0.18 (de)',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '3',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -261,6 +272,7 @@ def test_analyse_verify_editor_level0():
         'created_by': 'Level0 v1.1',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -281,6 +293,7 @@ def test_analyse_verify_editor_qgis():
         'created_by': 'QGIS plugin',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -304,6 +317,7 @@ def test_analyse_verify_editor_id_osm():
         'host': 'https://www.openstreetmap.org/edit',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -328,6 +342,7 @@ def test_analyse_verify_editor_id_improveosm():
         'host': 'http://improveosm.org/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -352,6 +367,7 @@ def test_analyse_verify_editor_id_strava():
         'host': 'https://strava.github.io/iD/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -374,6 +390,7 @@ def test_analyse_verify_editor_rapid():
         'host': 'https://mapwith.ai/rapid',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -396,6 +413,7 @@ def test_analyse_verify_editor_rapid_test():
         'host': 'https://mapwith.ai/rapidtest',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '5',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -420,6 +438,7 @@ def test_verify_editor_id_unknown_instance():
         'host': 'http://anotherhost.com/iD',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '2',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -445,6 +464,7 @@ def test_verify_editor_id_is_known_instance():
         'host': 'https://www.openstreetmap.org/iD',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -470,6 +490,7 @@ def test_verify_editor_netlify_id_is_known_instance():
         'host': 'https://ideditor.netlify.app/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '4',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -495,6 +516,7 @@ def test_verify_hotosm_id_is_known_instance():
         'host': 'https://tasks.teachosm.org/projects/23/map/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -509,6 +531,7 @@ def test_verify_hotosm_id_is_known_instance():
         'host': 'https://tasks.hotosm.org/projects/23/map/',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -536,6 +559,7 @@ def test_analyse_verify_editor_Potlatch2():
         'created_by': 'Potlatch 2',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -667,6 +691,7 @@ def test_get_dict():
     assert 'bbox' in ch.get_dict().keys()
     assert 'date' in ch.get_dict().keys()
     assert 'comment' in ch.get_dict().keys()
+    assert 'comments_count' in ch.get_dict().keys()
     assert 'source' in ch.get_dict().keys()
     assert 'imagery_used' in ch.get_dict().keys()
     assert 'is_suspect' in ch.get_dict().keys()
@@ -677,7 +702,7 @@ def test_get_dict():
     assert 'delete' in ch.get_dict().keys()
     assert 'metadata' in ch.get_dict().keys()
     assert ch.get_dict()['metadata']['host'] == 'https://www.openstreetmap.org/id'
-    assert len(ch.get_dict().keys()) == 16
+    assert len(ch.get_dict().keys()) == 17
 
     # An iD changeset with warnings:
     ch = Analyse(72783703)
@@ -689,6 +714,7 @@ def test_get_dict():
     assert 'bbox' in ch.get_dict().keys()
     assert 'date' in ch.get_dict().keys()
     assert 'comment' in ch.get_dict().keys()
+    assert 'comments_count' in ch.get_dict().keys()
     assert 'source' in ch.get_dict().keys()
     assert 'imagery_used' in ch.get_dict().keys()
     assert 'is_suspect' in ch.get_dict().keys()
@@ -702,7 +728,8 @@ def test_get_dict():
     assert ch.get_dict()['metadata']['locale'] == 'en-US'
     assert ch.get_dict()['metadata']['warnings:crossing_ways'] == 1
     assert ch.get_dict()['metadata']['changesets_count'] == 5970
-    assert len(ch.get_dict().keys()) == 16
+    assert ch.get_dict()['comments_count'] == 2
+    assert len(ch.get_dict().keys()) == 17
 
     # A JOSM changeset
     ch = Analyse(46315321)
@@ -714,6 +741,7 @@ def test_get_dict():
     assert 'bbox' in ch.get_dict().keys()
     assert 'date' in ch.get_dict().keys()
     assert 'comment' in ch.get_dict().keys()
+    assert 'comments_count' in ch.get_dict().keys()
     assert 'source' in ch.get_dict().keys()
     assert 'imagery_used' in ch.get_dict().keys()
     assert 'is_suspect' in ch.get_dict().keys()
@@ -724,7 +752,7 @@ def test_get_dict():
     assert 'delete' in ch.get_dict().keys()
     assert 'metadata' in ch.get_dict().keys()
     assert ch.get_dict()['metadata'] == {}
-    assert len(ch.get_dict().keys()) == 16
+    assert len(ch.get_dict().keys()) == 17
 
 
 def test_changeset_without_tags():
@@ -782,6 +810,7 @@ def test_changeset_with_review_requested():
         'created_by': 'Potlatch 2',
         'created_at': '2015-04-25T18:08:46Z',
         'comment': 'add pois',
+        'comments_count': '1',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -804,6 +833,7 @@ def test_changeset_with_warning_tag_almost_junction():
         'created_at': '2019-04-25T18:08:46Z',
         'host': 'https://www.openstreetmap.org/edit',
         'comment': 'add pois',
+        'comments_count': '3',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -836,6 +866,7 @@ def test_changeset_with_warning_tag_close_nodes():
         'created_at': '2019-04-25T18:08:46Z',
         'host': 'https://www.openstreetmap.org/edit',
         'comment': 'add pois',
+        'comments_count': '13',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -858,6 +889,7 @@ def test_changeset_with_warning_tag_crossing_ways():
         'created_at': '2019-04-25T18:08:46Z',
         'host': 'https://www.openstreetmap.org/edit',
         'comment': 'add pois',
+        'comments_count': '0',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -880,6 +912,7 @@ def test_changeset_with_warning_tag_disconnected_way():
         'created_at': '2019-04-25T18:08:46Z',
         'host': 'https://www.openstreetmap.org/edit',
         'comment': 'add pois',
+        'comments_count': '2',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
@@ -910,6 +943,7 @@ def test_changeset_with_warning_tag_fix_me():
         'created_at': '2019-04-25T18:08:46Z',
         'host': 'https://www.openstreetmap.org/edit',
         'comment': 'add pois',
+        'comments_count': '3',
         'id': '1',
         'user': 'JustTest',
         'uid': '123123',
