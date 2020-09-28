@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+[0.8.0] - 2020-09-28
+* Register comments_count field
+
 [0.7.0] - 2020-08-04
 
 * Register changeset arbitrary tags under the metadata field
