@@ -394,6 +394,7 @@ class Analyse(object):
                     'strava.github.io',
                     'preview.ideditor.com',
                     'ideditor.netlify.app',
+                    'ideditor.amazon.com',
                     'hey.mapbox.com',
                     'projets.pavie.info',
                     'maps.mapcat.com',
