@@ -514,7 +514,7 @@ def test_verify_id_editor_amazon_is_known_instance():
     ch_dict = {
         'created_by': 'iD 2.17.3',
         'host': 'https://ideditor.amazon.com/',
-        'created_at': '2015-04-25T18:08:46Z',
+        'created_at': '2020-09-25T18:08:46Z',
         'comment': 'add pois',
         'comments_count': '4',
         'id': '1',
