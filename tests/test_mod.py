@@ -507,6 +507,32 @@ def test_verify_editor_netlify_id_is_known_instance():
     assert ch.is_suspect is False
 
 
+def test_verify_id_editor_amazon_is_known_instance():
+    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
+    to suspicion_reasons.
+    """
+    ch_dict = {
+        'created_by': 'iD 2.17.3',
+        'host': 'https://ideditor.amazon.com/',
+        'created_at': '2020-09-25T18:08:46Z',
+        'comment': 'add pois',
+        'comments_count': '4',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    ch = Analyse(ch_dict)
+    ch.verify_editor()
+    assert ch.powerfull_editor is False
+    assert 'Unknown iD instance' not in ch.suspicion_reasons
+    assert ch.is_suspect is False
+
+
 def test_verify_hotosm_id_is_known_instance():
     """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
     to suspicion_reasons.
