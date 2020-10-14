@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+[0.8.1] - 2020-10-14
+* Include ideditor.amazon.com to the list of trusted editors
+
 [0.8.0] - 2020-09-28
 * Register comments_count field
 
