@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.8.2] - 2020-10-16
+* Replace homura by urllib.request
+* Drop Python 2 support
+
 [0.8.1] - 2020-10-14
 * Include ideditor.amazon.com to the list of trusted editors
 
