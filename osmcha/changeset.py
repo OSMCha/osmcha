@@ -3,6 +3,7 @@ from __future__ import division, unicode_literals
 import gzip
 import json
 import re
+from urllib.request import urlretrieve
 from os import environ
 from datetime import datetime
 from os.path import basename, join, isfile, dirname, abspath
@@ -12,7 +13,6 @@ import xml.etree.ElementTree as ET
 
 import yaml
 import requests
-from homura import download
 from shapely.geometry import Polygon
 
 from osmcha.warnings import Warnings
@@ -229,7 +229,7 @@ class ChangesetList(object):
         else:
             self.path = mkdtemp()
             self.filename = join(self.path, basename(changeset_file))
-            download(changeset_file, self.path)
+            urlretrieve(changeset_file, self.filename)
 
         self.xml = ET.fromstring(gzip.open(self.filename).read())
 

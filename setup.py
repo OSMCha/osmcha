@@ -31,7 +31,6 @@ setup(name='osmcha',
       install_requires=[
           'click',
           'requests',
-          'homura',
           'shapely',
           'python-dateutil',
           'PyYAML'
