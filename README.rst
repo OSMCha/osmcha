@@ -17,6 +17,9 @@ You can report issues or request new features in the the
 .. image:: https://coveralls.io/repos/willemarcel/osmcha/badge.svg
     :target: https://coveralls.io/r/willemarcel/osmcha
 
+.. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
+    :target: code_of_conduct.md
+
 Installation
 ============
 
