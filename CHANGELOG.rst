@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.8.3] - 2021-04-15
+* Consider as "New mapper" users with less than 50 changesets
+* Remove request to osm-comments-api
+
 [0.8.2] - 2020-10-16
 * Replace homura by urllib.request
 * Drop Python 2 support
