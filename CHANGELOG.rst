@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+[0.8.4] - 2021-05-27
+* Add lyft.com to the list of trusted_hosts
+
 [0.8.3] - 2021-04-15
 * Consider as "New mapper" users with less than 50 changesets
 * Remove request to osm-comments-api
