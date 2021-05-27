@@ -388,6 +388,7 @@ class Analyse(object):
                     'tasks.teachosm.org',
                     'tasks-stage.hotosm.org',
                     'tasks.hotosm.org',
+                    'lyft.com',
                     ]
                 if self.host.split('://')[-1].split('/')[0] not in trusted_hosts:
                     self.label_suspicious('Unknown iD instance')
