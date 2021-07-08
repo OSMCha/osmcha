@@ -163,6 +163,17 @@ To run the tests on `osmcha`:
   pip install -e .[test]
   py.test -v
 
+Publishing a new version
+=========================
+
+Update the version number in ``osmcha/__init__.py`` and execute
+the following commands:
+
+.. code-block:: console
+
+  python setup.py bdist_wheel
+  twine upload dist/osmcha-{version}...
+
 Changelog
 =========
 
