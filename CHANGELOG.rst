@@ -3,6 +3,7 @@ Change Log
 
 [0.8.5] - 2021-07-08
 * Add the Simplified Chinese translation 导入 for import (#58)
+* Replace Travis-CI by Github Actions
 
 [0.8.4] - 2021-05-27
 * Add lyft.com to the list of trusted_hosts

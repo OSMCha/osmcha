@@ -11,9 +11,6 @@ You can report issues or request new features in the the
 .. image:: https://badge.fury.io/py/osmcha.svg
     :target: http://badge.fury.io/py/osmcha
 
-.. image:: https://travis-ci.org/willemarcel/osmcha.svg
-    :target: https://travis-ci.org/willemarcel/osmcha
-
 .. image:: https://coveralls.io/repos/willemarcel/osmcha/badge.svg
     :target: https://coveralls.io/r/willemarcel/osmcha
 
