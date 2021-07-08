@@ -166,7 +166,7 @@ To run the tests on `osmcha`:
 Publishing a new version
 =========================
 
-Update the version number in `osmcha/__init__.py <osmcha/__init__.py>` and execute
+Update the version number in ``osmcha/__init__.py`` and execute
 the following commands:
 
 .. code-block:: console
