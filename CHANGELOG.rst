@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+[0.8.6] - 2022-05-04
+* Remove travis-ci
+* Add tasks.mapwith.ai to iD allowed hosts list
+
 [0.8.5] - 2021-07-08
 * Add the Simplified Chinese translation 导入 for import (#58)
 * Replace Travis-CI by Github Actions
