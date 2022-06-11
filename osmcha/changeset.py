@@ -356,6 +356,8 @@ class Analyse(object):
                 if word in self.source.lower():
                     if word == 'yandex' and 'yandex panorama' in self.source.lower():
                         pass
+                    elif word == 'яндекс' and ('яндекс панорам' in self.source.lower() or 'яндекс.панорам' in self.source.lower()):
+                        pass
                     else:
                         self.label_suspicious('suspect_word')
                         break
