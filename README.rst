@@ -34,6 +34,7 @@ You can read a `replication changeset file <https://planet.openstreetmap.org/rep
 directly from the web:
 
 .. code-block:: python
+
   from osmcha.changeset import ChangesetList
   c = ChangesetList('https://planet.openstreetmap.org/replication/changesets/002/236/374.osm.gz')
 
@@ -53,6 +54,7 @@ Finally, to analyse an especific changeset, do:
 
 .. code-block:: python
 
+  from osmcha.changeset import Analyse
   ch = Analyse(changeset_id)
   ch.full_analysis()
 
@@ -141,7 +143,7 @@ flagged.
 OSM Server Configuration
 ------------------------
 
-If you need to use OSMCha with another OSM server instance, you need to configure the OSM_SERVER_URL environment variable. Example:
+If you need to use OSMCha with another OSM server instance, you need to configure the OSM_SERVER_URL environment variable, without trailing slash. Example:
 
 .. code-block:: console
 
