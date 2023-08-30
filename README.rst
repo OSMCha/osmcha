@@ -34,7 +34,7 @@ You can read a `replication changeset file <https://planet.openstreetmap.org/rep
 directly from the web:
 
 .. code-block:: python
-
+  from osmcha.changeset import ChangesetList
   c = ChangesetList('https://planet.openstreetmap.org/replication/changesets/002/236/374.osm.gz')
 
 or from your local filesystem.
@@ -138,18 +138,14 @@ User has multiple blocks
 Changesets created by users that has received more than one block will be
 flagged.
 
+OSM Server Configuration
+------------------------
 
-Unknown iD instance
--------------------
+If you need to use OSMCha with another OSM server instance, you need to configure the OSM_SERVER_URL environment variable. Example:
 
-Verify the changesets created with iD editor to check the host instance. The trusted
-iD instances are: `OSM.org <https://osm.org/>`_, `Strava <https://strava.github.io/iD/>`_,
-`ImproveOSM <https://improveosm.org>`_, `iDeditor <https://preview.ideditor.com/master/>`_,
-`Hey <https://hey.mapbox.com/iD-internal/>`_, `Mapcat <https://maps.mapcat.com/edit>`_ and
-`iD indoor <http://projets.pavie.info/id-indoor/>`_, `Softek <https://id.softek.ir>`_ and `RapiD <https://mapwith.ai/rapid>`_.
+.. code-block:: console
 
-If you deploy an iD instance for an organization, please let us know so we can whitelist it.
-
+  export OSM_SERVER_URL='https://www.openhistoricalmap.org'
 
 Tests
 ======

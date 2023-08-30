@@ -30,10 +30,11 @@ except TypeError:
         failobj=join(dirname(abspath(__file__)), 'suspect_words.yaml')
         )
 WORDS = yaml.safe_load(open(SUSPECT_WORDS_FILE, 'r').read())
-OSM_USERS_API = environ.get(
-    'OSM_USERS_API',
-    'https://www.openstreetmap.org/api/0.6/user/{user_id}'
+OSM_SERVER_URL = environ.get(
+    'OSM_SERVER_URL',
+    default='https://www.openstreetmap.org'
     )
+OSM_API = '{}/api/0.6'.format(OSM_SERVER_URL)
 # infosrmation that we get from changeset xml key
 MANDATORY_TAGS = ['id', 'user', 'uid', 'bbox', 'created_at', 'comments_count']
 # fields that will be removed on the Analyse.get_dict() method
@@ -54,7 +55,10 @@ def get_user_details(user_id):
     """
     reasons = []
     try:
-        url = OSM_USERS_API.format(user_id=requests.compat.quote(user_id))
+        url = '{osm_api}/user/{user_id}'.format(
+            osm_api=OSM_API,
+            user_id=requests.compat.quote(user_id)
+        )
         user_request = requests.get(url)
         if user_request.status_code == 200:
             user_data = user_request.content
@@ -97,7 +101,8 @@ def get_changeset(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = 'https://www.openstreetmap.org/api/0.6/changeset/{}/download'.format(
+    url = '{}/changeset/{}/download'.format(
+        OSM_API,
         changeset
         )
     return ET.fromstring(requests.get(url).content)
@@ -110,7 +115,10 @@ def get_metadata(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = 'https://www.openstreetmap.org/api/0.6/changeset/{}'.format(changeset)
+    url = '{}/changeset/{}'.format(
+        OSM_API,
+        changeset
+        )
     return ET.fromstring(requests.get(url).content)[0]
 
 
@@ -242,10 +250,11 @@ class ChangesetList(object):
 
 class Analyse(object):
     """Analyse a changeset and define if it is suspect."""
+
     def __init__(self, changeset, create_threshold=200, modify_threshold=200,
-            delete_threshold=30, percentage=0.7, top_threshold=1000,
-            suspect_words=WORDS['common'] + WORDS['sources'],
-            illegal_sources=WORDS['sources'], excluded_words=WORDS['exclude']):
+                 delete_threshold=30, percentage=0.7, top_threshold=1000,
+                 suspect_words=WORDS['common'] + WORDS['sources'],
+                 illegal_sources=WORDS['sources'], excluded_words=WORDS['exclude']):
         if type(changeset) in [int, str]:
             self.set_fields(changeset_info(get_metadata(changeset)))
         elif type(changeset) == dict:
@@ -371,29 +380,6 @@ class Analyse(object):
                 if editor in self.editor.lower():
                     self.powerfull_editor = True
                     break
-
-            if 'iD' in self.editor:
-                trusted_hosts = [
-                    'www.openstreetmap.org',
-                    'improveosm.org',
-                    'strava.github.io',
-                    'preview.ideditor.com',
-                    'ideditor.netlify.app',
-                    'ideditor.amazon.com',
-                    'hey.mapbox.com',
-                    'projets.pavie.info',
-                    'maps.mapcat.com',
-                    'id.softek.ir',
-                    'mapwith.ai',
-                    'tasks.mapwith.ai',
-                    'tasks-staging.mapwith.ai',
-                    'tasks.teachosm.org',
-                    'tasks-stage.hotosm.org',
-                    'tasks.hotosm.org',
-                    'lyft.com',
-                    ]
-                if self.host.split('://')[-1].split('/')[0] not in trusted_hosts:
-                    self.label_suspicious('Unknown iD instance')
         else:
             self.powerfull_editor = True
             self.label_suspicious('Software editor was not declared')
@@ -411,15 +397,15 @@ class Analyse(object):
         self.verify_editor()
 
         try:
-            if (self.create / len(actions) > self.percentage and
-                    self.create > self.create_threshold and
-                    (self.powerfull_editor or self.create > self.top_threshold)):
+            if (self.create / len(actions) > self.percentage
+                    and self.create > self.create_threshold
+                    and (self.powerfull_editor or self.create > self.top_threshold)):
                 self.label_suspicious('possible import')
-            elif (self.modify / len(actions) > self.percentage and
-                    self.modify > self.modify_threshold):
+            elif (self.modify / len(actions) > self.percentage
+                    and self.modify > self.modify_threshold):
                 self.label_suspicious('mass modification')
-            elif ((self.delete / len(actions) > self.percentage and
-                    self.delete > self.delete_threshold) or
+            elif ((self.delete / len(actions) > self.percentage
+                    and self.delete > self.delete_threshold) or
                     self.delete > self.top_threshold):
                 self.label_suspicious('mass deletion')
         except ZeroDivisionError:
