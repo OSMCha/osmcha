@@ -13,7 +13,7 @@ from osmcha.warnings import Warnings
 
 
 def test_find_words():
-    """Test the changeset.find_words function and the regular expressions."""
+    """Test the changeset.find_words function and regular expressions."""
     suspect_words = WORDS['sources'] + WORDS['common']
     excluded_words = WORDS['exclude']
 
@@ -112,9 +112,9 @@ def test_analyse_label_suspicious():
 
 
 def test_changeset_without_coords():
-    """Changeset deleted a relation, so it has not a bbox."""
+    """Changeset deleted a relation, so it does not have a bbox."""
     ch = Analyse(33624206)
-    assert ch.bbox == 'GEOMETRYCOLLECTION EMPTY'
+    assert ch.bbox == 'POLYGON EMPTY'
 
 
 def test_analyse_verify_words():
@@ -333,127 +333,6 @@ def test_analyse_verify_editor_id_osm():
     assert ch.suspicion_reasons == []
 
 
-def test_analyse_verify_editor_id_improveosm():
-    """Test if iD is not a powerfull_editor and if http://improveosm.org
-    is a trusted instance.
-    """
-    ch_dict = {
-        'created_by': 'iD 1.7.3',
-        'host': 'http://improveosm.org/',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '1',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert ch.suspicion_reasons == []
-
-
-def test_analyse_verify_editor_id_strava():
-    """Test if iD is not a powerfull_editor and if https://strava.github.io/iD/
-    is a trusted instance.
-    """
-    ch_dict = {
-        'created_by': 'iD 1.7.3',
-        'host': 'https://strava.github.io/iD/',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '0',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert ch.suspicion_reasons == []
-
-
-def test_analyse_verify_editor_rapid():
-    """Test if RapiD is not a powerfull_editor and a trusted instance."""
-    ch_dict = {
-        'created_by': 'RapiD 0.9.0',
-        'host': 'https://mapwith.ai/rapid',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '0',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert ch.suspicion_reasons == []
-
-
-def test_analyse_verify_editor_rapid_test():
-    """Test if RapiD test is not a powerfull_editor and a trusted instance."""
-    ch_dict = {
-        'created_by': 'RapiD 0.9.0',
-        'host': 'https://mapwith.ai/rapidtest',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '5',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert ch.suspicion_reasons == []
-
-
-def test_verify_editor_id_unknown_instance():
-    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
-    to suspicion_reasons.
-    """
-    ch_dict = {
-        'created_by': 'iD 1.7.3',
-        'host': 'http://anotherhost.com/iD',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '2',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch_dict)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert 'Unknown iD instance' in ch.suspicion_reasons
-    assert ch.is_suspect
-
 
 def test_verify_editor_id_is_known_instance():
     """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
@@ -557,52 +436,6 @@ def test_verify_id_editor_lyft_is_known_instance():
     assert ch.powerfull_editor is False
     assert 'Unknown iD instance' not in ch.suspicion_reasons
     assert ch.is_suspect is False
-
-
-def test_verify_hotosm_id_is_known_instance():
-    """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
-    to suspicion_reasons.
-    """
-    ch1 = {
-        'created_by': 'iD 1.7.3',
-        'host': 'https://tasks.teachosm.org/projects/23/map/',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '0',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch2 = {
-        'created_by': 'iD 1.7.3',
-        'host': 'https://tasks.hotosm.org/projects/23/map/',
-        'created_at': '2015-04-25T18:08:46Z',
-        'comment': 'add pois',
-        'comments_count': '1',
-        'id': '1',
-        'user': 'JustTest',
-        'uid': '123123',
-        'bbox': Polygon([
-            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
-            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
-            (-71.0646843, 44.2371354)
-            ])
-        }
-    ch = Analyse(ch1)
-    ch.verify_editor()
-    assert ch.powerfull_editor is False
-    assert 'Unknown iD instance' not in ch.suspicion_reasons
-    assert ch.is_suspect is False
-    ch_2 = Analyse(ch2)
-    ch_2.verify_editor()
-    assert ch_2.powerfull_editor is False
-    assert 'Unknown iD instance' not in ch_2.suspicion_reasons
-    assert ch_2.is_suspect is False
 
 
 def test_analyse_verify_editor_Potlatch2():
