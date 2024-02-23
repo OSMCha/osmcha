@@ -420,5 +420,8 @@ class Analyse(object):
                 ch_dict.pop(key)
 
         for field in FIELDS_TO_REMOVE:
-            ch_dict.pop(field)
+            try:
+                ch_dict.pop(field)
+            except KeyError:
+                pass
         return ch_dict
