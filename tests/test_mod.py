@@ -377,7 +377,6 @@ def test_analyse_verify_editor_id_osm():
     assert ch.suspicion_reasons == []
 
 
-
 def test_verify_editor_id_is_known_instance():
     """Test if iD is not a powerfull_editor and if 'Unknown iD instance' is added
     to suspicion_reasons.
@@ -902,6 +901,27 @@ def test_changeset_with_warning_tag_invalid_format():
     changeset.full_analysis()
     assert changeset.suspicion_reasons == []
     assert not changeset.is_suspect
+
+
+def get_dict_doesnt_fail_with_empty_host_value():
+    ch_dict = {
+        'created_by': 'iD',
+        'created_at': '2019-04-25T18:08:46Z',
+        'host': '',
+        'comment': 'add pois',
+        'id': '1',
+        'user': 'JustTest',
+        'uid': '123123',
+        'bbox': Polygon([
+            (-71.0646843, 44.2371354), (-71.0048652, 44.2371354),
+            (-71.0048652, 44.2430624), (-71.0646843, 44.2430624),
+            (-71.0646843, 44.2371354)
+            ])
+        }
+    changeset = Analyse(ch_dict)
+    changeset.full_analysis()
+    processed_dict = changeset.get_dict()
+    assert 'host' not in processed_dict.keys()
 
 
 def test_enabled_warnings():
