@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+[0.9.1] - 2024-02-23
+* Fix error when a changeset has an empty host value (#66)
+
+[0.9.0] - 2023-08-30
+* Make OSM URL configurable + remove unknown iD check (#65)
+* Exclude Yandex Panorama written in Russian (#64)
+
 [0.8.6] - 2022-05-04
 * Remove travis-ci
 * Add tasks.mapwith.ai to iD allowed hosts list

@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 import yaml
 import requests
 from shapely.geometry import Polygon
+from . import __version__ as version
 
 from osmcha.warnings import Warnings
 
@@ -35,6 +36,7 @@ OSM_SERVER_URL = environ.get(
     default='https://www.openstreetmap.org'
     )
 OSM_API = '{}/api/0.6'.format(OSM_SERVER_URL)
+OSM_REQUEST_HEADERS = {'User-Agent': f'OSMCha osmcha {version}'}
 # infosrmation that we get from changeset xml key
 MANDATORY_TAGS = ['id', 'user', 'uid', 'bbox', 'created_at', 'comments_count']
 # fields that will be removed on the Analyse.get_dict() method
@@ -55,11 +57,8 @@ def get_user_details(user_id):
     """
     reasons = []
     try:
-        url = '{osm_api}/user/{user_id}'.format(
-            osm_api=OSM_API,
-            user_id=requests.compat.quote(user_id)
-        )
-        user_request = requests.get(url)
+        url = f'{OSM_API}/user/{requests.compat.quote(user_id)}'
+        user_request = requests.get(url, headers=OSM_REQUEST_HEADERS)
         if user_request.status_code == 200:
             user_data = user_request.content
             xml_data = ET.fromstring(user_data)[0]
@@ -101,11 +100,10 @@ def get_changeset(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = '{}/changeset/{}/download'.format(
-        OSM_API,
-        changeset
+    url = f'{OSM_API}/changeset/{changeset}/download'
+    return ET.fromstring(
+        requests.get(url, headers=OSM_REQUEST_HEADERS).content
         )
-    return ET.fromstring(requests.get(url).content)
 
 
 def get_metadata(changeset):
@@ -115,11 +113,10 @@ def get_metadata(changeset):
     Args:
         changeset: the id of the changeset.
     """
-    url = '{}/changeset/{}'.format(
-        OSM_API,
-        changeset
-        )
-    return ET.fromstring(requests.get(url).content)[0]
+    url = f'{OSM_API}/changeset/{changeset}'
+    return ET.fromstring(
+        requests.get(url, headers=OSM_REQUEST_HEADERS).content
+        )[0]
 
 
 def get_bounds(changeset):
