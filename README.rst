@@ -6,7 +6,7 @@ It was designed to be used with `osmcha-django <https://github.com/osmcha/osmcha
 but also can be used standalone or in other projects.
 
 You can report issues or request new features in the the
-`osmcha-frontend repository <https://github.com/mapbox/osmcha-frontend>`_.
+`osmcha-frontend repository <https://github.com/osmcha/osmcha-frontend>`_.
 
 .. image:: https://badge.fury.io/py/osmcha.svg
     :target: http://badge.fury.io/py/osmcha
