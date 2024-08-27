@@ -11,11 +11,11 @@ You can report issues or request new features in the the
 .. image:: https://badge.fury.io/py/osmcha.svg
     :target: http://badge.fury.io/py/osmcha
 
-.. image:: https://coveralls.io/repos/osmcha/osmcha/badge.svg
+.. image:: https://coveralls.io/repos/OSMCha/osmcha/badge.svg
     :target: https://coveralls.io/r/willemarcel/osmcha
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
-    :target: code_of_conduct.md
+    :target: CODE_OF_CONDUCT.md
 
 Installation
 ============
