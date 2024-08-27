@@ -2,7 +2,7 @@ osmcha
 =======
 
 OSM Changeset Analyser, ``osmcha``, is a Python package to detect suspicious OSM changesets.
-It was designed to be used with `osmcha-django <https://github.com/willemarcel/osmcha-django>`_,
+It was designed to be used with `osmcha-django <https://github.com/osmcha/osmcha-django>`_,
 but also can be used standalone or in other projects.
 
 You can report issues or request new features in the the
@@ -11,11 +11,11 @@ You can report issues or request new features in the the
 .. image:: https://badge.fury.io/py/osmcha.svg
     :target: http://badge.fury.io/py/osmcha
 
-.. image:: https://coveralls.io/repos/willemarcel/osmcha/badge.svg
+.. image:: https://coveralls.io/repos/OSMCha/osmcha/badge.svg
     :target: https://coveralls.io/r/willemarcel/osmcha
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
-    :target: code_of_conduct.md
+    :target: CODE_OF_CONDUCT.md
 
 Installation
 ============
@@ -156,7 +156,7 @@ To run the tests on `osmcha`:
 
 .. code-block:: console
 
-  git clone https://github.com/willemarcel/osmcha.git
+  git clone https://github.com/osmcha/osmcha.git
   cd osmcha
   pip install -e .[test]
   py.test -v
@@ -180,8 +180,8 @@ Check `CHANGELOG <CHANGELOG.rst>`_ for the version history.
 Related projects
 ================
 
-* `osmcha-django <https://github.com/willemarcel/osmcha-django>`_ - backend and API
-* `osmcha-frontend <https://github.com/mapbox/osmcha-frontend>`_ - frontend of the `OSMCha <https://osmcha.org>`_ application
+* `osmcha-django <https://github.com/osmcha/osmcha-django>`_ - backend and API
+* `osmcha-frontend <https://github.com/osmcha/osmcha-frontend>`_ - frontend of the `OSMCha <https://osmcha.org>`_ application
 * `osm-compare <https://github.com/mapbox/osm-compare>`_ - library that analyse OSM features to input it to OSMCha
 
 License
