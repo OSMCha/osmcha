@@ -50,8 +50,8 @@ class InvalidChangesetError(Exception):
 
 
 def get_user_details(user_id):
-    """Get information about number of changesets, blocks and mapping days of a
-    user, using both the OSM API and the Mapbox comments APIself.
+    """Get information about the number of changesets, blocks and mapping days
+    of a user, using the OSM API.
     """
     reasons = []
     try:
@@ -240,7 +240,7 @@ class ChangesetList(object):
             )
 
     def filter(self):
-        """Filter the changesets that intersects with the geojson geometry."""
+        """Filter the changesets that intersect with the geojson geometry."""
         self.content = [
             ch
             for ch in self.xml
@@ -249,7 +249,7 @@ class ChangesetList(object):
 
 
 class Analyse(object):
-    """Analyse a changeset and define if it is suspect."""
+    """Analyse a changeset and evaluate if it is suspect."""
 
     def __init__(self, changeset, create_threshold=200, modify_threshold=200,
                  delete_threshold=30, percentage=0.7, top_threshold=1000,
@@ -257,7 +257,7 @@ class Analyse(object):
                  illegal_sources=WORDS['sources'], excluded_words=WORDS['exclude']):
         if type(changeset) in [int, str]:
             self.set_fields(changeset_info(get_metadata(changeset)))
-        elif type(changeset) == dict:
+        elif type(changeset) is dict:
             self.set_fields(changeset)
         else:
             raise InvalidChangesetError(
@@ -275,7 +275,7 @@ class Analyse(object):
         self.suspect_words = suspect_words
 
     def set_fields(self, changeset):
-        """Set the fields of this class with the metadata of the analysed
+        """Set the class attributes with the metadata of the analysed
         changeset.
         """
         self.id = int(changeset.get('id'))
@@ -321,7 +321,7 @@ class Analyse(object):
         self.is_suspect = True
 
     def full_analysis(self):
-        """Execute the count and verify_words methods."""
+        """Execute the count and verify methods."""
         self.count()
         self.verify_words()
         self.verify_user()
@@ -337,8 +337,9 @@ class Analyse(object):
                 self.label_suspicious(item)
 
     def verify_user(self):
-        """Verify if the changeset was made by a inexperienced mapper (anyone
-        with less than 5 edits) or by a user that was blocked more than once.
+        """Verify if the changeset was created by a inexperienced mapper
+        (anyone with less than 5 edits) or by a user that was blocked more
+        than once.
         """
         user_reasons = get_user_details(self.uid)
         [self.label_suspicious(reason) for reason in user_reasons]
