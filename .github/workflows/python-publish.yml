@@ -24,11 +24,11 @@ jobs:
       id-token: write
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v6
       with:
-        python-version: '3.9'
+        python-version: '3.14'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -38,4 +38,3 @@ jobs:
       run: python setup.py bdist_wheel --universal
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
-
