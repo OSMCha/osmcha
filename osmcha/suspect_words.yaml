@@ -1,10 +1,13 @@
 sources:
 - google
+- гугл
+- 구글
 - nokia
 - waze
 - apple
 - tomtom
 - wikimapia
+- викимапи
 - goo.gl
 - navteq
 - teleatlas
@@ -13,6 +16,7 @@ sources:
 - яндекс
 - 2gis
 - 2гис
+- 2 гис
 
 common:
 - pokemon
