@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[0.9.2] - 2024-08-27
+* Improve docstrings (#67)
+* Update github links (#68)
+* Add user-agent to OSM server requests (#69)
+
 [0.9.1] - 2024-02-23
 * Fix error when a changeset has an empty host value (#66)
 
