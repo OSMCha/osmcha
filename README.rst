@@ -131,7 +131,7 @@ the comment field. We have also a list of excluded words to avoid false positive
 New mapper
 -----------
 
-Verify if the user has less than 5 edits or less than 5 mapping days.
+Verify if the user has less than 50 changesets.
 
 
 User has multiple blocks
